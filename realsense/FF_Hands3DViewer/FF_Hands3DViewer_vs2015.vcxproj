@@ -231,14 +231,6 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ogl\controls.cpp" />
-    <ClCompile Include="ogl\objloader.cpp" />
-    <ClCompile Include="ogl\quaternion_utils.cpp" />
-    <ClCompile Include="ogl\shader.cpp" />
-    <ClCompile Include="ogl\tangentspace.cpp" />
-    <ClCompile Include="ogl\text2D.cpp" />
-    <ClCompile Include="ogl\texture.cpp" />
-    <ClCompile Include="ogl\vboindexer.cpp" />
     <ClCompile Include="src\glShowModel.cpp" />
     <ClCompile Include="src\testObj.cpp" />
     <ClCompile Include="src\timer.cpp" />
@@ -254,14 +246,6 @@
   <ItemGroup>
     <ClInclude Include="include\objLoader.hpp" />
     <ClInclude Include="include\RssdkHandler.h" />
-    <ClInclude Include="ogl\controls.hpp" />
-    <ClInclude Include="ogl\objloader.hpp" />
-    <ClInclude Include="ogl\quaternion_utils.hpp" />
-    <ClInclude Include="ogl\shader.hpp" />
-    <ClInclude Include="ogl\tangentspace.hpp" />
-    <ClInclude Include="ogl\text2D.hpp" />
-    <ClInclude Include="ogl\texture.hpp" />
-    <ClInclude Include="ogl\vboindexer.hpp" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="include\IView.h" />
     <ClInclude Include="include\timer.h" />

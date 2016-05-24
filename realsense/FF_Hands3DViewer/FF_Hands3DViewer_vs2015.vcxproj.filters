@@ -10,9 +10,6 @@
     <Filter Include="Resource Files">
       <Extensions>rc</Extensions>
     </Filter>
-    <Filter Include="ogl">
-      <UniqueIdentifier>{5884ace6-d448-4316-97ba-d865c41fedfb}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\timer.cpp">
@@ -44,30 +41,6 @@
     </ClCompile>
     <ClCompile Include="src\glShowModel.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ogl\controls.cpp">
-      <Filter>ogl</Filter>
-    </ClCompile>
-    <ClCompile Include="ogl\objloader.cpp">
-      <Filter>ogl</Filter>
-    </ClCompile>
-    <ClCompile Include="ogl\quaternion_utils.cpp">
-      <Filter>ogl</Filter>
-    </ClCompile>
-    <ClCompile Include="ogl\shader.cpp">
-      <Filter>ogl</Filter>
-    </ClCompile>
-    <ClCompile Include="ogl\tangentspace.cpp">
-      <Filter>ogl</Filter>
-    </ClCompile>
-    <ClCompile Include="ogl\text2D.cpp">
-      <Filter>ogl</Filter>
-    </ClCompile>
-    <ClCompile Include="ogl\texture.cpp">
-      <Filter>ogl</Filter>
-    </ClCompile>
-    <ClCompile Include="ogl\vboindexer.cpp">
-      <Filter>ogl</Filter>
     </ClCompile>
     <ClCompile Include="src\tinyObjLoader.cpp">
       <Filter>Source Files</Filter>
@@ -109,30 +82,6 @@
     </ClInclude>
     <ClInclude Include="include\objLoader.hpp">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ogl\controls.hpp">
-      <Filter>ogl</Filter>
-    </ClInclude>
-    <ClInclude Include="ogl\objloader.hpp">
-      <Filter>ogl</Filter>
-    </ClInclude>
-    <ClInclude Include="ogl\quaternion_utils.hpp">
-      <Filter>ogl</Filter>
-    </ClInclude>
-    <ClInclude Include="ogl\shader.hpp">
-      <Filter>ogl</Filter>
-    </ClInclude>
-    <ClInclude Include="ogl\tangentspace.hpp">
-      <Filter>ogl</Filter>
-    </ClInclude>
-    <ClInclude Include="ogl\text2D.hpp">
-      <Filter>ogl</Filter>
-    </ClInclude>
-    <ClInclude Include="ogl\texture.hpp">
-      <Filter>ogl</Filter>
-    </ClInclude>
-    <ClInclude Include="ogl\vboindexer.hpp">
-      <Filter>ogl</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

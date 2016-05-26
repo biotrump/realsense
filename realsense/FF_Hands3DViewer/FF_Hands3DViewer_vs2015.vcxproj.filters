@@ -10,6 +10,9 @@
     <Filter Include="Resource Files">
       <Extensions>rc</Extensions>
     </Filter>
+    <Filter Include="ogllib">
+      <UniqueIdentifier>{e76f9f17-bd46-4d6a-888e-84beb3bac971}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\timer.cpp">
@@ -36,14 +39,32 @@
     <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\testObj.cpp">
+    <ClCompile Include="src\OBJShow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\glShowModel.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\dep\ogllib\controls.cpp">
+      <Filter>ogllib</Filter>
     </ClCompile>
-    <ClCompile Include="src\tinyObjLoader.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\dep\ogllib\objloader.cpp">
+      <Filter>ogllib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\ogllib\quaternion_utils.cpp">
+      <Filter>ogllib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\ogllib\shader.cpp">
+      <Filter>ogllib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\ogllib\tangentspace.cpp">
+      <Filter>ogllib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\ogllib\text2D.cpp">
+      <Filter>ogllib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\ogllib\texture.cpp">
+      <Filter>ogllib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dep\ogllib\vboindexer.cpp">
+      <Filter>ogllib</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -80,8 +101,32 @@
     <ClInclude Include="include\camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\objLoader.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\dep\ogllib\controls.hpp">
+      <Filter>ogllib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dep\ogllib\objloader.hpp">
+      <Filter>ogllib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dep\ogllib\quaternion_utils.hpp">
+      <Filter>ogllib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dep\ogllib\shader.hpp">
+      <Filter>ogllib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dep\ogllib\tangentspace.hpp">
+      <Filter>ogllib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dep\ogllib\targetver.h">
+      <Filter>ogllib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dep\ogllib\text2D.hpp">
+      <Filter>ogllib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dep\ogllib\texture.hpp">
+      <Filter>ogllib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dep\ogllib\vboindexer.hpp">
+      <Filter>ogllib</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

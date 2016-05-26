@@ -4,7 +4,7 @@
 #include <vector>
 
 // Include GLEW
-#include <GL/glew.h>
+#include <glew.h>
 
 // Include GLFW
 #include <glfw3.h>
@@ -15,12 +15,25 @@ GLFWwindow* window;
 #include <glm/gtc/matrix_transform.hpp>
 using namespace glm;
 
-#include <ogl/shader.hpp>
-#include <ogl/texture.hpp>
-#include <ogl/controls.hpp>
-#include <ogl/objloader.hpp>
+#include "ogllib/shader.hpp"
+#include "ogllib/texture.hpp"
+#include "ogllib/controls.hpp"
+#include "ogllib/objloader.hpp"
 
-int objShowModel( int argc, char **argv )
+/*
+bool loadOBJ(
+	const char * path,
+	std::vector<glm::vec3> & out_vertices,
+	std::vector<glm::vec2> & out_uvs,
+	std::vector<glm::vec3> & out_normals
+);
+
+// Load a .DDS file using GLFW's own loader
+GLuint loadDDS(const char * imagepath);
+*/
+
+
+int OBJShow( int argc, char **argv )
 {
 	char obj_file[100];
 	if (argc == 1)
@@ -104,20 +117,7 @@ int objShowModel( int argc, char **argv )
 	bool res = loadOBJ(obj_file /*"cube.obj"*/, vertices, uvs, normals);
 
 	// Load it into a VBO
-#if 0//TODO
-	// Use the previous tutorial approach for storing everything in a VertexFormat(vec3 vertices, vex2 texCoords)
-	GLuint vao, vbo, ibo;
 
-	//1.  either vao for modern openGL
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
-
-	//2. Or vbo for old openGL
-	glGenBuffers(1, &vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, vertexData.size() * sizeof(VertexFormat), &vertexData[0], GL_STATIC_DRAW);
-
-#endif
 	GLuint vertexbuffer;
 	glGenBuffers(1, &vertexbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);

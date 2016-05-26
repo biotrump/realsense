@@ -240,9 +240,11 @@
     <ClCompile Include="..\dep\ogllib\texture.cpp" />
     <ClCompile Include="..\dep\ogllib\vboindexer.cpp" />
     <ClCompile Include="src\OBJShow.cpp" />
+    <ClCompile Include="src\testTinyOBJ.cpp" />
     <ClCompile Include="src\timer.cpp" />
     <ClCompile Include="src\OpenGLView.cpp" />
     <ClCompile Include="src\HandsController.cpp" />
+    <ClCompile Include="src\tinyObjLoader.cpp" />
     <ClCompile Include="src\Tree.cpp" />
     <ClCompile Include="src\HandsModel.cpp" />
     <ClCompile Include="src\RssdkHandler.cpp" />

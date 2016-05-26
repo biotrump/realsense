@@ -66,6 +66,12 @@
     <ClCompile Include="..\dep\ogllib\vboindexer.cpp">
       <Filter>ogllib</Filter>
     </ClCompile>
+    <ClCompile Include="src\testTinyOBJ.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tinyObjLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\RssdkHandler.h">

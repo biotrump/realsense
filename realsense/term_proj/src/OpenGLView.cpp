@@ -518,6 +518,7 @@ void OpenGLView::RenderSceneCB()
 		}
 	}
 
+	modelDisplay();//update assimp 3d model scene
 	glutSwapBuffers();
 
 	m_mutex.unlock();

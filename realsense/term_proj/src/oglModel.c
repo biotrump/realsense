@@ -42,7 +42,7 @@ GLuint scene_list = 0;
 struct aiVector3D scene_min, scene_max, scene_center;
 
 /* current rotation angle */
-static float angle = 0.f;
+static float angle = 70.f;
 
 #define aisgl_min(x,y) (x<y?x:y)
 #define aisgl_max(x,y) (y>x?y:x)
@@ -273,19 +273,19 @@ void do_motion (void)
 }
 
 /* ---------------------------------------------------------------------------- */
-void display(void)
+void modelDisplay(void)
 {
 	float tmp;
-
+#if 0
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	gluLookAt(0.f,0.f,3.f,0.f,0.f,-5.f,0.f,1.f,0.f);
 
+#endif
 	/* rotate it around the y axis */
-	glRotatef(angle,0.f,1.f,0.f);
-
+	glRotatef(angle, 0.f, 1.f, 0.f);
 	/* scale the whole asset to fit into our view frustum */
 	tmp = scene_max.x-scene_min.x;
 	tmp = aisgl_max(scene_max.y - scene_min.y,tmp);
@@ -310,9 +310,11 @@ void display(void)
 
 	glCallList(scene_list);
 
+	/*
 	glutSwapBuffers();
 
 	do_motion();
+	*/
 }
 
 /* ---------------------------------------------------------------------------- */

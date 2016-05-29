@@ -23,10 +23,7 @@ Copyright(c) 2011-2015 Intel Corporation. All Rights Reserved.
 #include "camera.h"
 #include "Texture.hpp"
 #include "config.h"
-
-extern "C" {
-	int oglModelLoad(char path[]);
-}
+#include "oglModel.h"
 
 namespace ModelViewController
 {

@@ -1,5 +1,5 @@
 #include "OpenGLView.h"
-
+# include <mmsystem.h>
 using namespace ModelViewController;
 
 /******************************************************************************/
@@ -409,15 +409,15 @@ void OpenGLView::RenderSceneCB()
 		{
 			glColor3f(1.0f,0.0f,0.0f);
 			glVertex3f(0,0,0);
-			glVertex3f(0.1f,0,0);
+			glVertex3f(0.3f,0,0);
 
 			glColor3f(0.0f,0.0f,1.0f);
 			glVertex3f(0,0,0);
-			glVertex3f(0,0.1f,0);
+			glVertex3f(0,0.3f,0);
 
 			glColor3f(0.0f,1.0f,0.0f);
 			glVertex3f(0,0,0);
-			glVertex3f(0,0,0.1f);
+			glVertex3f(0,0,0.3f);
 		}
 		glEnd();
 		
@@ -768,6 +768,7 @@ void OpenGLView::drawJoints(int index, bool applyTransformFlag)
 			if (m_cursorPoints[index].size() > m_cursorPointsCount)
 				m_cursorPoints[index].erase(m_cursorPoints[index].begin());
 			m_cursorPoints[index].push_back(m_skeletonTree[index].getRoot().getNodeValue().positionWorld);
+			//PlaySound(TEXT("d:\\DIP_2016\\realsense\\realsense\\FF_Hands3DViewer\\C.wav"), NULL, SND_ASYNC);
 		}
 		drawCursorPoints(index);
 	}

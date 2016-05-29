@@ -24,7 +24,7 @@ Extremities : 2 hands, medium hand speed, SR300 ??120 cm
 
 command line  : -full , full hand mode
 */
-int rs_main(int argc, char** argv)
+int main(int argc, char** argv)
 {
 	bool isFullHand = false;
 	if(argc == 2)

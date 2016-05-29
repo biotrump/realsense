@@ -84,27 +84,27 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.;include;res;../common/include;../../include;$(RSSDK_DIR)/include;$(RSSDK_DIR)/sample/common/include;Resource;../common/freeglut/include;../common/freeglut/include/GL;../common/glew/include;../common/glew/include/GL;$(RSSDK_DIR)/sample/common/freeglut/include;$(RSSDK_DIR)/sample/common/freeglut/include/GL;$(RSSDK_DIR)/sample/common/glew/include;$(RSSDK_DIR)/sample/common/glew/include/GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_WIN32_WINNT=0x0602;;GLEW_STATIC;FREEGLUT_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.;include;$(RSSDK_DIR)/include;$(RSSDK_DIR)/sample/common/include;Resource;../dep/freeglut/include;../dep/glew/include;..\dep\glm;..\dep\include%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;_WIN32_WINNT=0x0602;;GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Lib>
       <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
     </Lib>
     <ResourceCompile>
-      <AdditionalIncludeDirectories>.;include;res;../common/include;../../include;$(RSSDK_DIR)/include;$(RSSDK_DIR)/sample/common/include;Resource;../common/freeglut/include;../common/freeglut/include/GL;../common/glew/include;../common/glew/include/GL;$(RSSDK_DIR)/sample/common/freeglut/include;$(RSSDK_DIR)/sample/common/freeglut/include/GL;$(RSSDK_DIR)/sample/common/glew/include;$(RSSDK_DIR)/sample/common/glew/include/GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;include;$(RSSDK_DIR)/include;$(RSSDK_DIR)/sample/common/include;Resource;../dep/freeglut/include;../dep/glew/include;..\dep\glm;..\dep\include%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>libpxc_d.lib;libpxcutils_d.lib;;glew32s.lib;freeglut_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libpxc_d.lib;libpxcutils_d.lib;;glew32s.lib;freeglut.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>../common/lib/$(PlatformName)/$(PlatformToolset);../../lib/$(PlatformName);$(RSSDK_DIR)/lib/$(PlatformName);$(RSSDK_DIR)/sample/common/lib/$(PlatformName)/$(PlatformToolset);../common/freeglut/$(PlatformToolset)/$(PlatformName);../common/glew/$(PlatformToolset)/$(PlatformName);$(RSSDK_DIR)/sample/common/freeglut/$(PlatformToolset)/$(PlatformName);$(RSSDK_DIR)/sample/common/glew/$(PlatformToolset)/$(PlatformName);;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../dep/freeglut/lib/x64;../dep/glew/x64;../dep/assimp/lib/$(Configuration);$(RSSDK_DIR)/lib/$(PlatformName);$(RSSDK_DIR)/sample/common/lib/$(PlatformName)/$(PlatformToolset);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -113,27 +113,27 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.;include;res;../common/include;../../include;$(RSSDK_DIR)/include;$(RSSDK_DIR)/sample/common/include;Resource;../common/freeglut/include;../common/freeglut/include/GL;../common/glew/include;../common/glew/include/GL;$(RSSDK_DIR)/sample/common/freeglut/include;$(RSSDK_DIR)/sample/common/freeglut/include/GL;$(RSSDK_DIR)/sample/common/glew/include;$(RSSDK_DIR)/sample/common/glew/include/GL;D:\DIP_2016\realsense\realsense\dep\glfw\include\GLFW;D:\DIP_2016\realsense\realsense\dep\glm;D:\DIP_2016\realsense\realsense\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN64;_DEBUG;_CONSOLE;_WIN64_WINNT=0x0602;;GLEW_STATIC;FREEGLUT_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.;include;$(RSSDK_DIR)/include;$(RSSDK_DIR)/sample/common/include;Resource;../dep/freeglut/include;../dep/glew/include;..\dep\glm;..\dep\assimp\include%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;_WIN64_WINNT=0x0602;;GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Lib>
       <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
     </Lib>
     <ResourceCompile>
-      <AdditionalIncludeDirectories>.;include;res;../common/include;../../include;$(RSSDK_DIR)/include;$(RSSDK_DIR)/sample/common/include;Resource;../common/freeglut/include;../common/freeglut/include/GL;../common/glew/include;../common/glew/include/GL;$(RSSDK_DIR)/sample/common/freeglut/include;$(RSSDK_DIR)/sample/common/freeglut/include/GL;$(RSSDK_DIR)/sample/common/glew/include;$(RSSDK_DIR)/sample/common/glew/include/GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;include;$(RSSDK_DIR)/include;$(RSSDK_DIR)/sample/common/include;Resource;../dep/freeglut/include;../dep/glew/include;..\dep\glm;..\dep\include%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>libpxc_d.lib;libpxcutils_d.lib;glew32s.lib;freeglut_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libpxc_d.lib;libpxcutils_d.lib;glew32s.lib;freeglut.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>../common/lib/$(PlatformName)/$(PlatformToolset);../../lib/$(PlatformName);$(RSSDK_DIR)/lib/$(PlatformName);$(RSSDK_DIR)/sample/common/lib/$(PlatformName)/$(PlatformToolset);../common/freeglut/$(PlatformToolset)/$(PlatformName);../common/glew/$(PlatformToolset)/$(PlatformName);$(RSSDK_DIR)/sample/common/freeglut/$(PlatformToolset)/$(PlatformName);$(RSSDK_DIR)/sample/common/glew/$(PlatformToolset)/$(PlatformName);D:\DIP_2016\realsense\realsense\dep\glm;D:\DIP_2016\realsense\realsense\dep\glfw\lib-vc2015;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../dep/freeglut/lib/x64;../dep/glew/x64;../dep/assimp/lib/$(Configuration);$(RSSDK_DIR)/lib/$(PlatformName);$(RSSDK_DIR)/sample/common/lib/$(PlatformName)/$(PlatformToolset);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -141,8 +141,8 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>.;include;res;../common/include;../../include;$(RSSDK_DIR)/include;$(RSSDK_DIR)/sample/common/include;Resource;../common/freeglut/include;../common/freeglut/include/GL;../common/glew/include;../common/glew/include/GL;$(RSSDK_DIR)/sample/common/freeglut/include;$(RSSDK_DIR)/sample/common/freeglut/include/GL;$(RSSDK_DIR)/sample/common/glew/include;$(RSSDK_DIR)/sample/common/glew/include/GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_WIN32_WINNT=0x0602;;GLEW_STATIC;FREEGLUT_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.;include;$(RSSDK_DIR)/include;$(RSSDK_DIR)/sample/common/include;Resource;../dep/freeglut/include;../dep/glew/include;..\dep\glm;..\dep\include%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_CONSOLE;_WIN32_WINNT=0x0602;;GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
@@ -151,18 +151,18 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Lib>
       <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
     </Lib>
     <ResourceCompile>
-      <AdditionalIncludeDirectories>.;include;res;../common/include;../../include;$(RSSDK_DIR)/include;$(RSSDK_DIR)/sample/common/include;Resource;../common/freeglut/include;../common/freeglut/include/GL;../common/glew/include;../common/glew/include/GL;$(RSSDK_DIR)/sample/common/freeglut/include;$(RSSDK_DIR)/sample/common/freeglut/include/GL;$(RSSDK_DIR)/sample/common/glew/include;$(RSSDK_DIR)/sample/common/glew/include/GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;include;$(RSSDK_DIR)/include;$(RSSDK_DIR)/sample/common/include;Resource;../dep/freeglut/include;../dep/glew/include;..\dep\glm;..\dep\include%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>libpxc.lib;libpxcutils.lib;;glew32s.lib;freeglut_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../common/lib/$(PlatformName)/$(PlatformToolset);../../lib/$(PlatformName);$(RSSDK_DIR)/lib/$(PlatformName);$(RSSDK_DIR)/sample/common/lib/$(PlatformName)/$(PlatformToolset);../common/freeglut/$(PlatformToolset)/$(PlatformName);../common/glew/$(PlatformToolset)/$(PlatformName);$(RSSDK_DIR)/sample/common/freeglut/$(PlatformToolset)/$(PlatformName);$(RSSDK_DIR)/sample/common/glew/$(PlatformToolset)/$(PlatformName);;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libpxc.lib;libpxcutils.lib;;glew32s.lib;freeglut.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../dep/freeglut/lib/x64;../dep/glew/x64;../dep/assimp/lib/$(Configuration);$(RSSDK_DIR)/lib/$(PlatformName);$(RSSDK_DIR)/sample/common/lib/$(PlatformName)/$(PlatformToolset);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
@@ -175,8 +175,8 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>.;include;res;../common/include;../../include;$(RSSDK_DIR)/include;$(RSSDK_DIR)/sample/common/include;Resource;../common/freeglut/include;../common/freeglut/include/GL;../common/glew/include;../common/glew/include/GL;$(RSSDK_DIR)/sample/common/freeglut/include;$(RSSDK_DIR)/sample/common/freeglut/include/GL;$(RSSDK_DIR)/sample/common/glew/include;$(RSSDK_DIR)/sample/common/glew/include/GL;D:\DIP_2016\realsense\realsense\dep\glfw\include\GLFW;D:\DIP_2016\realsense\realsense\dep\glm;D:\DIP_2016\realsense\realsense\dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN64;NDEBUG;_CONSOLE;_WIN64_WINNT=0x0602;;GLEW_STATIC;FREEGLUT_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.;include;$(RSSDK_DIR)/include;$(RSSDK_DIR)/sample/common/include;Resource;../dep/freeglut/include;../dep/glew/include;..\dep\glm;..\dep\assimp\include%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;_CRT_SECURE_NO_WARNINGS;NDEBUG;_CONSOLE;_WIN64_WINNT=0x0602;;GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
@@ -185,18 +185,18 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Lib>
       <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
     </Lib>
     <ResourceCompile>
-      <AdditionalIncludeDirectories>.;include;res;../common/include;../../include;$(RSSDK_DIR)/include;$(RSSDK_DIR)/sample/common/include;Resource;../common/freeglut/include;../common/freeglut/include/GL;../common/glew/include;../common/glew/include/GL;$(RSSDK_DIR)/sample/common/freeglut/include;$(RSSDK_DIR)/sample/common/freeglut/include/GL;$(RSSDK_DIR)/sample/common/glew/include;$(RSSDK_DIR)/sample/common/glew/include/GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;include;$(RSSDK_DIR)/include;$(RSSDK_DIR)/sample/common/include;Resource;../dep/freeglut/include;../dep/glew/include;..\dep\glm;..\dep\include%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>libpxc.lib;libpxcutils.lib;glew32s.lib;freeglut_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../common/lib/$(PlatformName)/$(PlatformToolset);../../lib/$(PlatformName);$(RSSDK_DIR)/lib/$(PlatformName);$(RSSDK_DIR)/sample/common/lib/$(PlatformName)/$(PlatformToolset);../common/freeglut/$(PlatformToolset)/$(PlatformName);../common/glew/$(PlatformToolset)/$(PlatformName);$(RSSDK_DIR)/sample/common/freeglut/$(PlatformToolset)/$(PlatformName);$(RSSDK_DIR)/sample/common/glew/$(PlatformToolset)/$(PlatformName);D:\DIP_2016\realsense\realsense\dep\glm;D:\DIP_2016\realsense\realsense\dep\glfw\include\GLFW;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libpxc.lib;libpxcutils.lib;glew32s.lib;freeglut.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../dep/freeglut/lib/x64;../dep/glew/x64;../dep/assimp/lib/$(Configuration);$(RSSDK_DIR)/lib/$(PlatformName);$(RSSDK_DIR)/sample/common/lib/$(PlatformName)/$(PlatformToolset);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
@@ -212,6 +212,7 @@
     <ClCompile Include="src\HandsController.cpp" />
     <ClCompile Include="src\HandsModel.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\oglModel.c" />
     <ClCompile Include="src\OpenGLView.cpp" />
     <ClCompile Include="src\RssdkHandler.cpp" />
     <ClCompile Include="src\timer.cpp" />

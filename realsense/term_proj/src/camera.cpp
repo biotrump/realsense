@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include <freeglut.h>
+#include <GL/freeglut.h>
 
 #include "camera.h"
 

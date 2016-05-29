@@ -16,8 +16,8 @@ Copyright(c) 2011-2015 Intel Corporation. All Rights Reserved.
 #include <mutex>
 #include <string>
 
-#include <glew.h>
-#include <freeglut.h>
+#include <GL/glew.h>
+#include <GL/freeglut.h>
 
 #include "IView.h"
 #include "camera.h"

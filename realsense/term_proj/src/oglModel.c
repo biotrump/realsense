@@ -409,6 +409,7 @@ int oglModelLoad(char path[])
 		if (0 != loadasset(path)) {//model loading failure
 			if (  ( 0 != loadasset("../../../../test/models-nonbsd/X/dwarf.x") ) && 
 				( 0 != loadasset("../../test/models/X/Testwuson.X") ) ) {
+				printf("%s loading failure\n", path);
 				return -1;
 			}
 		}

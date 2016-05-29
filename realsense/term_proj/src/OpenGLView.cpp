@@ -599,10 +599,16 @@ void OpenGLView::switchTrackingMode()
 }
 
 //===========================================================================//
-
-OpenGLView::OpenGLView(bool isFullHand)
+//path[] :the 3d model path
+OpenGLView::OpenGLView(bool isFullHand, const char path[])
 {
+	m_f3dmodel = false;
 	m_isFullHand = isFullHand;
+	if (path && strlen(path)) {
+		m_modelPath=new char[strlen(path) + 1];
+		strcpy(m_modelPath, path);
+	}
+
 }
 
 //===========================================================================//
@@ -630,9 +636,11 @@ void::OpenGLView::close()
 }
 
 //===========================================================================//
-
+//called from 
+//pxcStatus RssdkHandler::Init(bool isFullHand, const pxcCHAR* sequencePath)
 void OpenGLView::init()
 {
+	int ret = -1;
 	char *myargv [1];
 	int myargc=1;
 	myargv [0]="3dHandsViewer";
@@ -656,6 +664,12 @@ void OpenGLView::init()
 	InitializeGlutCallbacks();
 	glutLeaveMainLoop();
 
+	//load 3d model before glut init
+	if (m_modelPath && strlen(m_modelPath)) {
+		ret = oglModelLoad(m_modelPath);
+		if (ret == 0)
+			m_f3dmodel = true;
+	}
 
 	// Must be done after glut is initialized!
 	GLenum res = glewInit();
@@ -672,6 +686,7 @@ void OpenGLView::init()
 	delete[] emptyDepth;
 
 	CreateScenario();
+
 }
 
 //===========================================================================//

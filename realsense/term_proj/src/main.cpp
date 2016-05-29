@@ -47,7 +47,7 @@ int main(int argc, char** argv)
 	}
 
 	// Create Openglview which implements IView (allows creations of different views)
-	openGLView = new ModelViewController::OpenGLView(isFullHand);
+	openGLView = new ModelViewController::OpenGLView(isFullHand, argv[1]);
 	if(!openGLView)
 	{
 		std::printf("Failed at Initialization\n");

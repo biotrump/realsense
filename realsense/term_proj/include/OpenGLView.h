@@ -33,7 +33,7 @@ namespace ModelViewController
 	class OpenGLView : public IView
 	{
 	public:
-		OpenGLView(bool isFullHand = false);
+		OpenGLView(bool isFullHand = false, const char path[]=NULL);
 		~OpenGLView();
 		virtual void renderScene();
 		virtual void display3DSkeleton(Tree<PXCHandData::JointData>* skeletonTree,bool hasLeftHand, bool hasRightHand);
@@ -45,7 +45,9 @@ namespace ModelViewController
 		virtual bool stop();
 		virtual void switchTrackingMode();
 		virtual void init();
-		
+		bool is3DModel(void) {
+			return m_f3dmodel;
+		};
 
 	private:
 		static void RenderSceneCB();
@@ -97,6 +99,8 @@ namespace ModelViewController
 		static unsigned int m_cursorPointsCount;
 		int m_winWidth;
 		int m_winHeight;
+		char *m_modelPath;
+		bool m_f3dmodel;
 	};
 }
 

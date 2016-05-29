@@ -25,8 +25,19 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-/* the global Assimp scene object */
-const struct aiScene* scene = NULL;
+/* the global Assimp scene object
+http://www.learnopengl.com/#!Model-Loading/Assimp
+Assimp is able to import dozens of different model file formats (and export to some as well) 
+by loading all the model's data into Assimp's generalized data structures. As soon as 
+Assimp has loaded the model, we can retrieve all the data we need from Assimp's data structures. 
+Because the data structure of Assimp stays the same, regardless of the type of file format 
+we imported, it abstracts us from all the different file formats out there.
+When importing a model via Assimp it loads the entire model into a scene object that contains 
+all the data of the imported model/scene. Assimp then has a collection of nodes 
+where each node contains indices to data stored in the scene object 
+where each node can have any number of children
+*/
+const struct aiScene* assimp_scene = NULL;
 GLuint scene_list = 0;
 struct aiVector3D scene_min, scene_max, scene_center;
 
@@ -61,7 +72,7 @@ void get_bounding_box_for_node (const struct aiNode* nd,
 	aiMultiplyMatrix4(trafo,&nd->mTransformation);
 
 	for (; n < nd->mNumMeshes; ++n) {
-		const struct aiMesh* mesh = scene->mMeshes[nd->mMeshes[n]];
+		const struct aiMesh* mesh = assimp_scene->mMeshes[nd->mMeshes[n]];
 		for (t = 0; t < mesh->mNumVertices; ++t) {
 
 			struct aiVector3D tmp = mesh->mVertices[t];
@@ -91,7 +102,7 @@ void get_bounding_box (struct aiVector3D* min, struct aiVector3D* max)
 
 	min->x = min->y = min->z =  1e10f;
 	max->x = max->y = max->z = -1e10f;
-	get_bounding_box_for_node(scene->mRootNode,min,max,&trafo);
+	get_bounding_box_for_node(assimp_scene->mRootNode,min,max,&trafo);
 }
 
 /* ---------------------------------------------------------------------------- */
@@ -192,7 +203,7 @@ void recursive_render (const struct aiScene *sc, const struct aiNode* nd)
 
 	/* draw all meshes assigned to this node */
 	for (; n < nd->mNumMeshes; ++n) {
-		const struct aiMesh* mesh = scene->mMeshes[nd->mMeshes[n]];
+		const struct aiMesh* mesh = assimp_scene->mMeshes[nd->mMeshes[n]];
 
 		apply_material(sc->mMaterials[mesh->mMaterialIndex]);
 
@@ -293,7 +304,7 @@ void display(void)
             /* now begin at the root node of the imported data and traverse
                the scenegraph by multiplying subsequent local transforms
                together on GL's matrix stack. */
-	    recursive_render(scene, scene->mRootNode);
+	    recursive_render(assimp_scene, assimp_scene->mRootNode);
 	    glEndList();
 	}
 
@@ -309,9 +320,9 @@ int loadasset (const char* path)
 {
 	/* we are taking one of the postprocessing presets to avoid
 	   spelling out 20+ single postprocessing flags here. */
-	scene = aiImportFile(path,aiProcessPreset_TargetRealtime_MaxQuality);
+	assimp_scene = aiImportFile(path,aiProcessPreset_TargetRealtime_MaxQuality);
 
-	if (scene) {
+	if (assimp_scene) {
 		get_bounding_box(&scene_min,&scene_max);
 		scene_center.x = (scene_min.x + scene_max.x) / 2.0f;
 		scene_center.y = (scene_min.y + scene_max.y) / 2.0f;
@@ -321,9 +332,40 @@ int loadasset (const char* path)
 	return 1;
 }
 
-/* ---------------------------------------------------------------------------- */
-int oglModel(int argc, char **argv)
+void assimp_init(void)
 {
+	static struct aiLogStream stream;
+
+	/* get a handle to the predefined STDOUT log stream and attach
+	it to the logging system. It remains active for all further
+	calls to aiImportFile(Ex) and aiApplyPostProcessing. */
+	stream = aiGetPredefinedLogStream(aiDefaultLogStream_STDOUT, NULL);
+	aiAttachLogStream(&stream);
+
+	/* ... same procedure, but this stream now writes the
+	log messages to assimp_log.txt */
+	stream = aiGetPredefinedLogStream(aiDefaultLogStream_FILE, "assimp_log.txt");
+	aiAttachLogStream(&stream);
+}
+
+void assimp_deinit(void)
+{
+	if (assimp_scene == NULL) return;
+	/* cleanup - calling 'aiReleaseImport' is important, as the library
+	keeps internal resources until the scene is freed again. Not
+	doing so can cause severe resource leaking. */
+	aiReleaseImport(assimp_scene);
+
+	/* We added a log stream to the library, it's our job to disable it
+	again. This will definitely release the last resources allocated
+	by Assimp.*/
+	aiDetachAllLogStreams();
+}
+
+/* ---------------------------------------------------------------------------- */
+int oglModelLoad(char path[])
+{
+#if 0
 	struct aiLogStream stream;
 
 	glutInitWindowSize(900,600);
@@ -335,6 +377,7 @@ int oglModel(int argc, char **argv)
 	glutDisplayFunc(display);
 	glutReshapeFunc(reshape);
 
+
 	/* get a handle to the predefined STDOUT log stream and attach
 	   it to the logging system. It remains active for all further
 	   calls to aiImportFile(Ex) and aiApplyPostProcessing. */
@@ -345,17 +388,33 @@ int oglModel(int argc, char **argv)
 	   log messages to assimp_log.txt */
 	stream = aiGetPredefinedLogStream(aiDefaultLogStream_FILE,"assimp_log.txt");
 	aiAttachLogStream(&stream);
-
 	/* the model name can be specified on the command line. If none
-	  is specified, we try to locate one of the more expressive test 
-	  models from the repository (/models-nonbsd may be missing in 
-	  some distributions so we need a fallback from /models!). */
-	if( 0 != loadasset( argc >= 2 ? argv[1] : "../../test/models-nonbsd/X/dwarf.x")) {
-		if( argc != 1 || (0 != loadasset( "../../../../test/models-nonbsd/X/dwarf.x") && 0 != loadasset( "../../test/models/X/Testwuson.X"))) { 
+	is specified, we try to locate one of the more expressive test
+	models from the repository (/models-nonbsd may be missing in
+	some distributions so we need a fallback from /models!). */
+	if (0 != loadasset(argc >= 2 ? argv[1] : "../../test/models-nonbsd/X/dwarf.x")) {
+		if (argc != 1 || (0 != loadasset("../../../../test/models-nonbsd/X/dwarf.x") && 0 != loadasset("../../test/models/X/Testwuson.X"))) {
 			return -1;
 		}
 	}
 
+#endif
+	assimp_init();
+
+	/* the model name can be specified on the command line. If none
+	is specified, we try to locate one of the more expressive test
+	models from the repository (/models-nonbsd may be missing in
+	some distributions so we need a fallback from /models!). */
+	if (path && strlen(path)) {
+		if (0 != loadasset(path)) {//model loading failure
+			if (  ( 0 != loadasset("../../../../test/models-nonbsd/X/dwarf.x") ) && 
+				( 0 != loadasset("../../test/models/X/Testwuson.X") ) ) {
+				return -1;
+			}
+		}
+	}
+
+#if 0
 	glClearColor(0.1f,0.1f,0.1f,1.f);
 
 	glEnable(GL_LIGHTING);
@@ -375,15 +434,21 @@ int oglModel(int argc, char **argv)
 	glutGet(GLUT_ELAPSED_TIME);
 	glutMainLoop();
 
+
 	/* cleanup - calling 'aiReleaseImport' is important, as the library 
 	   keeps internal resources until the scene is freed again. Not 
 	   doing so can cause severe resource leaking. */
-	aiReleaseImport(scene);
+	aiReleaseImport(assimp_scene);
 
 	/* We added a log stream to the library, it's our job to disable it
 	   again. This will definitely release the last resources allocated
 	   by Assimp.*/
 	aiDetachAllLogStreams();
+
+	//assimp_deinit();
+
+#endif
+
 	return 0;
 }
 

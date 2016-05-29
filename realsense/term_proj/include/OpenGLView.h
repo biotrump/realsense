@@ -22,6 +22,11 @@ Copyright(c) 2011-2015 Intel Corporation. All Rights Reserved.
 #include "IView.h"
 #include "camera.h"
 #include "Texture.hpp"
+#include "config.h"
+
+extern "C" {
+	int oglModelLoad(char path[]);
+}
 
 namespace ModelViewController
 {
@@ -90,6 +95,8 @@ namespace ModelViewController
 		static bool m_isFullHand;
 
 		static unsigned int m_cursorPointsCount;
+		int m_winWidth;
+		int m_winHeight;
 	};
 }
 

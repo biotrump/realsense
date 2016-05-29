@@ -284,9 +284,15 @@ static void CreateScenario()
 
 	glEnable(GL_LIGHT0);
 
+	glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);//????
 	glEnable(GL_NORMALIZE);
+	
+	/* XXX docs say all polygons are emitted CCW, but tests show that some aren't. */
+	if (getenv("MODEL_IS_BROKEN"))
+		glFrontFace(GL_CW);//?????
 
 	glEnable(GL_COLOR_MATERIAL);
+	glColorMaterial(GL_FRONT_AND_BACK, GL_DIFFUSE);//????
 
 	glEnable(GL_LIGHTING); 
 
@@ -600,9 +606,10 @@ OpenGLView::OpenGLView(bool isFullHand)
 }
 
 //===========================================================================//
-
+//called by void RssdkHandler::Start()
 void OpenGLView::renderScene()
 {
+	glutGet(GLUT_ELAPSED_TIME);//????
 	glutMainLoop();
 	m_stop = true;
 }
@@ -630,11 +637,14 @@ void OpenGLView::init()
 	int myargc=1;
 	myargv [0]="3dHandsViewer";
 	glutInit(&myargc, myargv);
+	
+	m_winWidth=WinWidth;
+	m_winHeight=WinHeight;
 
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH); 
-	glutInitWindowSize(1000, 600);
+	glutInitWindowSize(m_winWidth, m_winHeight);
 	glutInitWindowPosition(100, 100);
-	glutCreateWindow("3D Hands Viewer");
+	glutCreateWindow(MyGLWinName);
 
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
 	glutCloseFunc(close);  

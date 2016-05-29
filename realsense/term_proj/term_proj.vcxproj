@@ -220,6 +220,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\camera.h" />
+    <ClInclude Include="include\config.h" />
     <ClInclude Include="include\Defs.h" />
     <ClInclude Include="include\HandsController.h" />
     <ClInclude Include="include\HandsModel.h" />

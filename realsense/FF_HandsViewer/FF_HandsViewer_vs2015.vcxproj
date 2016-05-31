@@ -235,8 +235,10 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\HandsViewer.cpp" />
     <ClCompile Include="src\timer.cpp" />
+    <ClCompile Include="src\TMIDI_CTRL.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\TMIDI_CTRL.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="include\timer.h" />
     <ClInclude Include="resource1.h" />

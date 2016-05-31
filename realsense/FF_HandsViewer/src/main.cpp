@@ -27,7 +27,7 @@ Copyright(c) 2012-2013 Intel Corporation. All Rights Reserved.
 #include <vector>
 #include <map>
 
-
+#include "TMIDI_CTRL.h"
 
 #define IDC_STATUS 10000
 #define ID_DEVICEX 21000
@@ -1230,6 +1230,9 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE, LPTSTR, int)
 
 	LPWSTR *szArgList;
 	int argCount;
+	tmidi_init();
+	tmidi_tempo();//test ???
+	tmidi_velocity();
 
 	szArgList = CommandLineToArgvW(GetCommandLine(), &argCount);
 	if (szArgList != NULL)
@@ -1252,7 +1255,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE, LPTSTR, int)
 		}
 
 	}
-
+	
 	InitCommonControls();
 	g_hInst=hInstance;
 
@@ -1282,7 +1285,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE, LPTSTR, int)
 	SetWindowText(hwndStatus,L"Gesture:");
 
 	UpdateWindow(hWnd);
-
+	
 	MSG msg;
 	for (int sts;(sts=GetMessageW(&msg,NULL,0,0));) {
 		if (sts == -1) return sts;

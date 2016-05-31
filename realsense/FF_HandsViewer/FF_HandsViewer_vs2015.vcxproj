@@ -235,7 +235,6 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\HandsViewer.cpp" />
     <ClCompile Include="src\timer.cpp" />
-    <ClCompile Include="src\TMspeech.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
@@ -245,7 +244,6 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="hands_viewer.rc" />
-    <ResourceCompile Include="tmidi.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

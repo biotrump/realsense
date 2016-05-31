@@ -23,6 +23,7 @@
     <RootNamespace>FF_HandsViewer</RootNamespace>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{40720838-A101-4928-B2C1-A0E7CBD41FB1}</ProjectGuid>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -234,14 +235,17 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\HandsViewer.cpp" />
     <ClCompile Include="src\timer.cpp" />
+    <ClCompile Include="src\TMspeech.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
     <ClInclude Include="include\timer.h" />
     <ClInclude Include="resource1.h" />
+    <ClInclude Include="tresource.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="hands_viewer.rc" />
+    <ResourceCompile Include="tmidi.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

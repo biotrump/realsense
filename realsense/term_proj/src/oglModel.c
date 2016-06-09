@@ -1,4 +1,7 @@
 /* ----------------------------------------------------------------------------
+@file d:\DIP_2016\assimp\samples\SimpleOpenGL\Sample_SimpleOpenGL.c
+*/
+
 // Simple sample to prove that Assimp is easy to use with OpenGL.
 // It takes a file name as command line parameter, loads it using standard
 // settings and displays it.
@@ -364,7 +367,10 @@ void assimp_deinit(void)
 	aiDetachAllLogStreams();
 }
 
-/* ---------------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------------- 
+Loading 3D model by assimp lib.
+
+*/
 int oglModelLoad(char path[])
 {
 #if 0

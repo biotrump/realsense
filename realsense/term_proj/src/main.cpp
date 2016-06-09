@@ -31,7 +31,7 @@ command line  : -full , full hand mode
 */
 int main(int argc, char** argv)
 {
-	bool isFullHand = false;
+	bool isFullHand = true;//false;
 	if(argc == 2)
 	{
 		if (strcmp(argv[1],"-full")==0)

@@ -23,14 +23,15 @@ static FMOD::Channel    *channel = 0;
 static void             *extradriverdata = 0;
 static int notes_count;
 char *notes[] = {
-	"A.wav",     "B.wav",     "C.wav",     "D.wav",
-	"E.wav",     "F_d.wav",   "G_d2.wav",  "A_d.wav",
+	"C.wav",     "D.wav", "E.wav",   "F.wav", "G.wav", "A.wav",     "B.wav",
+	"C_u.wav",   "D_u.wav",   "E_u.wav","F_u.wav",   "G_u.wav","A_u.wav",   "B_u.wav",
+   "C_u2.wav", "D_u2.wav",  "E_u2.wav", "F_u2.wav", "G_u2.wav", "A_u2.wav", "B_u2.wav"
+   /*
+   ,  "C_u3.wav",       "G_d.wav"
+	"F_d.wav",     "A_d.wav",
 	"B_d.wav",   "C_d.wav",   "D_d.wav",   "E_d.wav",
-	"F_u.wav",   "G_u.wav",	  "A_d2.wav",  "B_d2.wav",
-	"C_u.wav",   "D_u.wav",   "E_u.wav",   "F_u2.wav",
-	"G_u2.wav",	 "A_u.wav",   "B_u.wav",   "C_u2.wav",
-	"D_u2.wav",  "E_u2.wav",  "G.wav",	   "A_u2.wav",
-	"B_u2.wav",  "C_u3.wav",  "F.wav",     "G_d.wav"
+	"G_d2.wav", "A_d2.wav",  "B_d2.wav",
+	*/
 };
 
 
@@ -208,7 +209,7 @@ int FMOD_Init(void)
 	unsigned int      version;
 
 	fmod_sounds = new FMOD::Sound *[notes_count];
-	notes_count = sizeof(notes) / sizeof(char *);
+	notes_count = 8;//sizeof(notes) / sizeof(char *);
 
 	Common_Init(&extradriverdata);
 
@@ -285,27 +286,27 @@ int fmodKeyboardCB(unsigned char Key, int x, int y)
 		ret = 1;
 		break;
 	case '4':
-		result = fmod_system->playSound(fmod_sounds[KeyNote_F_d], 0, false, &channel);
+		result = fmod_system->playSound(fmod_sounds[KeyNote_F], 0, false, &channel);
 		ERRCHECK(result);
 		ret = 1;
 		break;
 	case '5':
-		result = fmod_system->playSound(fmod_sounds[KeyNote_G_d2], 0, false, &channel);
+		result = fmod_system->playSound(fmod_sounds[KeyNote_G], 0, false, &channel);
 		ERRCHECK(result);
 		ret = 1;
 		break;
 	case '6':
-		result = fmod_system->playSound(fmod_sounds[KeyNote_A_d], 0, false, &channel);
+		result = fmod_system->playSound(fmod_sounds[KeyNote_A], 0, false, &channel);
 		ERRCHECK(result);
 		ret = 1;
 		break;
 	case '7':
-		result = fmod_system->playSound(fmod_sounds[KeyNote_B_d], 0, false, &channel);
+		result = fmod_system->playSound(fmod_sounds[KeyNote_B], 0, false, &channel);
 		ERRCHECK(result);
 		ret = 1;
 		break;
 	case '8':
-		result = fmod_system->playSound(fmod_sounds[KeyNote_C_d], 0, false, &channel);
+		result = fmod_system->playSound(fmod_sounds[KeyNote_C_u], 0, false, &channel);
 		ERRCHECK(result);
 		ret = 1;
 		break;

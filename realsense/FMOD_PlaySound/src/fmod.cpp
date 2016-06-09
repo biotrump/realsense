@@ -28,10 +28,12 @@ char *notes[] = {
 "B_u2.wav",  "C_u3.wav",  "F.wav",     "G_d.wav"
 };
 
-FMOD::System     *fmod_system;
+static FMOD::System     *fmod_system;
 //FMOD::Sound      *sound1, *sound2, *sound3;
 //vector <FMOD::Sound *> fmod_sounds;
-FMOD::Sound **fmod_sounds;
+static FMOD::Sound **fmod_sounds;
+static void   *extradriverdata = 0;
+
 int notes_count;
 
 FMOD::System* &FMOD_system(void)
@@ -48,7 +50,6 @@ FMOD_RESULT fmod_init(void)
 	//FMOD::Channel    *channel = 0;
 	FMOD_RESULT       result;
 	unsigned int      version;
-	void             *extradriverdata = 0;
 
 	fmod_sounds = new FMOD::Sound *[notes_count];
 	notes_count = sizeof(notes) / sizeof(char *);

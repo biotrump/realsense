@@ -2,6 +2,10 @@
 # include <mmsystem.h>
 using namespace ModelViewController;
 
+int fmodKeyboardCB(unsigned char Key, int x, int y);
+int FMOD_ShutDown(void);
+int FMOD_Init(void);
+
 /******************************************************************************/
 /*                                Defines                                     */
 /******************************************************************************/
@@ -63,6 +67,8 @@ void OpenGLView::KeyboardCB(unsigned char Key, int x, int y)
 {
 	bool ret = false;
 	ret = modelKeyboardCB(Key, x , y);
+	if(!ret)
+		fmodKeyboardCB(Key, x, y);
 	//return ret;
 }
 
@@ -626,8 +632,9 @@ OpenGLView::OpenGLView(bool isFullHand, const char path[])
 void OpenGLView::renderScene()
 {
 	glutGet(GLUT_ELAPSED_TIME);//????
-	glutMainLoop();
+	glutMainLoop();//loop till end of game
 	m_stop = true;
+
 }
 
 //===========================================================================//
@@ -696,7 +703,8 @@ void OpenGLView::init()
 	delete[] emptyDepth;
 
 	CreateScenario();
-
+	
+	FMOD_Init();
 }
 
 //===========================================================================//
@@ -903,6 +911,8 @@ OpenGLView::~OpenGLView()
 		delete [] m_image;
 	if(DepthTex)
 		delete DepthTex;
+
+//	FMOD_ShutDown();
 }
 
 

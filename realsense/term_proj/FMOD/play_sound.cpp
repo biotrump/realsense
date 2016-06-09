@@ -10,31 +10,48 @@ as it plays.
 ==============================================================================*/
 #include "fmod.hpp"
 #include "common.h"
+
 //FMOD error 51 - Error initializing output device.
 //This is possibly an issue with the AudioSrv service in Windows. 
 //Go to the TaskManager. Go to the Services tab. 
 //Find 'AudioSrv' in the list, right click and Restart it.
 //http://forum.unity3d.com/threads/fmod-failed-to-initialize-error-initializing-output-device-on-wp8-device.266117/
 
-//int FMOD_Main()
+static FMOD::System     *fmod_system;
+static FMOD::Sound **fmod_sounds;
+static FMOD::Channel    *channel = 0;
+static void             *extradriverdata = 0;
+static int notes_count;
+char *notes[] = {
+	"A.wav",     "B.wav",     "C.wav",     "D.wav",
+	"E.wav",     "F_d.wav",   "G_d2.wav",  "A_d.wav",
+	"B_d.wav",   "C_d.wav",   "D_d.wav",   "E_d.wav",
+	"F_u.wav",   "G_u.wav",	  "A_d2.wav",  "B_d2.wav",
+	"C_u.wav",   "D_u.wav",   "E_u.wav",   "F_u2.wav",
+	"G_u2.wav",	 "A_u.wav",   "B_u.wav",   "C_u2.wav",
+	"D_u2.wav",  "E_u2.wav",  "G.wav",	   "A_u2.wav",
+	"B_u2.wav",  "C_u3.wav",  "F.wav",     "G_d.wav"
+};
+
+
 int play_sound()
 {
-    FMOD::System     *system;
     FMOD::Sound      *sound1, *sound2, *sound3;
-    FMOD::Channel    *channel = 0;
     FMOD_RESULT       result;
     unsigned int      version;
-    void             *extradriverdata = 0;
     
+	fmod_sounds = new FMOD::Sound *[notes_count];
+	notes_count = sizeof(notes) / sizeof(char *);
+
     Common_Init(&extradriverdata);
 
     /*
         Create a System object and initialize
     */
-    result = FMOD::System_Create(&system);
+    result = FMOD::System_Create(&fmod_system);
     ERRCHECK(result);
 
-    result = system->getVersion(&version);
+    result = fmod_system->getVersion(&version);
     ERRCHECK(result);
 
     if (version < FMOD_VERSION)
@@ -42,47 +59,56 @@ int play_sound()
         Common_Fatal("FMOD lib version %08x doesn't match header version %08x", version, FMOD_VERSION);
     }
 
-    result = system->init(32, FMOD_INIT_NORMAL, extradriverdata);
+    result = fmod_system->init(32, FMOD_INIT_NORMAL, extradriverdata);
     ERRCHECK(result);
 
-    result = system->createSound(Common_MediaPath("drumloop.wav"), FMOD_DEFAULT, 0, &sound1);
+#if 0
+    result = fmod_system->createSound(Common_MediaPath("drumloop.wav"), FMOD_DEFAULT, 0, &sound1);
     ERRCHECK(result);
 
     result = sound1->setMode(FMOD_LOOP_OFF);    /* drumloop.wav has embedded loop points which automatically makes looping turn on, */
     ERRCHECK(result);                           /* so turn it off here.  We could have also just put FMOD_LOOP_OFF in the above CreateSound call. */
 
-    result = system->createSound(Common_MediaPath("jaguar.wav"), FMOD_DEFAULT, 0, &sound2);
+    result = fmod_system->createSound(Common_MediaPath("jaguar.wav"), FMOD_DEFAULT, 0, &sound2);
     ERRCHECK(result);
 
-    result = system->createSound(Common_MediaPath("swish.wav"), FMOD_DEFAULT, 0, &sound3);
+    result = fmod_system->createSound(Common_MediaPath("swish.wav"), FMOD_DEFAULT, 0, &sound3);
     ERRCHECK(result);
+#endif
+
+	for (int i = 0; i < notes_count; i++) {
+		result = fmod_system->createSound(Common_MediaPath(notes[i]), FMOD_DEFAULT, 0, fmod_sounds + i);
+		ERRCHECK(result);
+		if (result != FMOD_OK)
+			return result;
+	}
 
     /*
         Main loop
     */
     do
     {
-        Common_Update();
+        Common_Update();//capture keyboard
 
         if (Common_BtnPress(BTN_ACTION1))
         {
-            result = system->playSound(sound1, 0, false, &channel);
+            result = fmod_system->playSound(fmod_sounds[KeyNote_C], 0, false, &channel);
             ERRCHECK(result);
         }
 
         if (Common_BtnPress(BTN_ACTION2))
         {
-            result = system->playSound(sound2, 0, false, &channel);
+            result = fmod_system->playSound(fmod_sounds[KeyNote_D], 0, false, &channel);
             ERRCHECK(result);
         }
 
         if (Common_BtnPress(BTN_ACTION3))
         {
-            result = system->playSound(sound3, 0, false, &channel);
+			result = fmod_system->playSound(fmod_sounds[KeyNote_E], 0, false, &channel);
             ERRCHECK(result);
         }
 
-        result = system->update();
+        result = fmod_system->update();
         ERRCHECK(result);
 
         {
@@ -125,7 +151,7 @@ int play_sound()
                 }
             }
 
-            system->getChannelsPlaying(&channelsplaying, NULL);
+            fmod_system->getChannelsPlaying(&channelsplaying, NULL);
 
             Common_Draw("==================================================");
             Common_Draw("Play Sound Example.");
@@ -147,18 +173,148 @@ int play_sound()
     /*
         Shut down
     */
+	/*
     result = sound1->release();
     ERRCHECK(result);
     result = sound2->release();
     ERRCHECK(result);
     result = sound3->release();
     ERRCHECK(result);
-    result = system->close();
+	*/
+	for (int i = 0; i < notes_count; i++) {
+		if (fmod_sounds[i]) {
+			result = fmod_sounds[i]->release();
+			//fmod_sounds[i] = NULL;
+			ERRCHECK(result);
+			if (result != FMOD_OK)
+				return result;
+		}
+	}
+	delete[]fmod_sounds;
+
+    result = fmod_system->close();
     ERRCHECK(result);
-    result = system->release();
+    result = fmod_system->release();
     ERRCHECK(result);
 
     Common_Close();
 
     return 0;
+}
+
+int FMOD_Init(void)
+{
+	FMOD_RESULT       result;
+	unsigned int      version;
+
+	fmod_sounds = new FMOD::Sound *[notes_count];
+	notes_count = sizeof(notes) / sizeof(char *);
+
+	Common_Init(&extradriverdata);
+
+	/*
+	Create a System object and initialize
+	*/
+	result = FMOD::System_Create(&fmod_system);
+	ERRCHECK(result);
+
+	result = fmod_system->getVersion(&version);
+	ERRCHECK(result);
+
+	if (version < FMOD_VERSION)
+	{
+		Common_Fatal("FMOD lib version %08x doesn't match header version %08x", version, FMOD_VERSION);
+	}
+
+	result = fmod_system->init(32, FMOD_INIT_NORMAL, extradriverdata);
+	ERRCHECK(result);
+
+	for (int i = 0; i < notes_count; i++) {
+		result = fmod_system->createSound(Common_MediaPath(notes[i]), FMOD_DEFAULT, 0, fmod_sounds + i);
+		ERRCHECK(result);
+		if (result != FMOD_OK)
+			return result;
+	}
+}
+
+int FMOD_ShutDown(void)
+{
+	FMOD_RESULT       result=FMOD_OK;
+	/*
+	Shut down
+	*/
+	for (int i = 0; i < notes_count; i++) {
+		if (fmod_sounds[i]) {
+			result = fmod_sounds[i]->release();
+			//fmod_sounds[i] = NULL;
+			ERRCHECK(result);
+			if (result != FMOD_OK)
+				return result;
+		}
+	}
+	delete[]fmod_sounds;
+
+	result = fmod_system->close();
+	ERRCHECK(result);
+	result = fmod_system->release();
+	ERRCHECK(result);
+
+	Common_Close();
+	return result;
+}
+
+int fmodKeyboardCB(unsigned char Key, int x, int y)
+{
+	int ret = 0;
+	FMOD_RESULT       result;
+	switch(Key)
+	{
+	case '1':
+		result = fmod_system->playSound(fmod_sounds[KeyNote_C], 0, false, &channel);
+		ERRCHECK(result);
+		ret = 1;
+		break;
+	case '2':
+		result = fmod_system->playSound(fmod_sounds[KeyNote_D], 0, false, &channel);
+		ERRCHECK(result);
+		ret = 1;
+		break;
+	case '3':
+		result = fmod_system->playSound(fmod_sounds[KeyNote_E], 0, false, &channel);
+		ERRCHECK(result);
+		ret = 1;
+		break;
+	case '4':
+		result = fmod_system->playSound(fmod_sounds[KeyNote_F_d], 0, false, &channel);
+		ERRCHECK(result);
+		ret = 1;
+		break;
+	case '5':
+		result = fmod_system->playSound(fmod_sounds[KeyNote_G_d2], 0, false, &channel);
+		ERRCHECK(result);
+		ret = 1;
+		break;
+	case '6':
+		result = fmod_system->playSound(fmod_sounds[KeyNote_A_d], 0, false, &channel);
+		ERRCHECK(result);
+		ret = 1;
+		break;
+	case '7':
+		result = fmod_system->playSound(fmod_sounds[KeyNote_B_d], 0, false, &channel);
+		ERRCHECK(result);
+		ret = 1;
+		break;
+	case '8':
+		result = fmod_system->playSound(fmod_sounds[KeyNote_C_d], 0, false, &channel);
+		ERRCHECK(result);
+		ret = 1;
+		break;
+	default:
+		break;
+	}
+
+	result = fmod_system->update();
+	ERRCHECK(result);
+
+	return ret;
 }

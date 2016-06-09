@@ -16,6 +16,14 @@ as it plays.
 //Find 'AudioSrv' in the list, right click and Restart it.
 //http://forum.unity3d.com/threads/fmod-failed-to-initialize-error-initializing-output-device-on-wp8-device.266117/
 
+//FMOD_RESULT fmod_init();
+//FMOD_RESULT fmod_deinit(void);
+FMOD_RESULT fmod_init(void);
+FMOD_RESULT fmod_deinit(void);
+FMOD_RESULT fmod_play(KEY_NOTE key_note, FMOD::Channel * &channel);
+FMOD_RESULT fmod_sysupdate(void);
+FMOD::System* &FMOD_system(void);
+
 int FMOD_Main()
 {
     FMOD::System     *system;
@@ -24,7 +32,9 @@ int FMOD_Main()
     FMOD_RESULT       result;
     unsigned int      version;
     void             *extradriverdata = 0;
-    
+#if 1
+	fmod_init();
+#else
     Common_Init(&extradriverdata);
 
     /*
@@ -47,6 +57,7 @@ int FMOD_Main()
     result = system->createSound(Common_MediaPath("drumloop.wav"), FMOD_DEFAULT, 0, &sound1);
     ERRCHECK(result);
 
+
     result = sound1->setMode(FMOD_LOOP_OFF);    /* drumloop.wav has embedded loop points which automatically makes looping turn on, */
     ERRCHECK(result);                           /* so turn it off here.  We could have also just put FMOD_LOOP_OFF in the above CreateSound call. */
 
@@ -55,6 +66,7 @@ int FMOD_Main()
 
     result = system->createSound(Common_MediaPath("swish.wav"), FMOD_DEFAULT, 0, &sound3);
     ERRCHECK(result);
+#endif
 
     /*
         Main loop
@@ -65,24 +77,28 @@ int FMOD_Main()
 
         if (Common_BtnPress(BTN_ACTION1))
         {
-            result = system->playSound(sound1, 0, false, &channel);
+            //result = system->playSound(sound1, 0, false, &channel);
+			result = fmod_play(KeyNote_C, channel);
             ERRCHECK(result);
         }
 
         if (Common_BtnPress(BTN_ACTION2))
         {
-            result = system->playSound(sound2, 0, false, &channel);
+            //result = system->playSound(sound2, 0, false, &channel);
+			result = fmod_play(KeyNote_D, channel);
             ERRCHECK(result);
         }
 
         if (Common_BtnPress(BTN_ACTION3))
         {
-            result = system->playSound(sound3, 0, false, &channel);
+            //result = system->playSound(sound3, 0, false, &channel);
+			result = fmod_play(KeyNote_E, channel);
             ERRCHECK(result);
         }
 
-        result = system->update();
-        ERRCHECK(result);
+        //result = system->update();
+        //ERRCHECK(result);
+		result= fmod_sysupdate();
 
         {
             unsigned int ms = 0;
@@ -124,7 +140,7 @@ int FMOD_Main()
                 }
             }
 
-            system->getChannelsPlaying(&channelsplaying, NULL);
+			FMOD_system()->getChannelsPlaying(&channelsplaying, NULL);
 
             Common_Draw("==================================================");
             Common_Draw("Play Sound Example.");
@@ -146,6 +162,9 @@ int FMOD_Main()
     /*
         Shut down
     */
+#if 1
+	fmod_deinit();
+#else
     result = sound1->release();
     ERRCHECK(result);
     result = sound2->release();
@@ -158,6 +177,6 @@ int FMOD_Main()
     ERRCHECK(result);
 
     Common_Close();
-
+#endif
     return 0;
 }

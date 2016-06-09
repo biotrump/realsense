@@ -8,6 +8,10 @@ extern  "C" {
 
 	int oglModelLoad(char path[]);
 	void modelDisplay(void);
+	int modelKeyboardCB(unsigned char Key, int x, int y);
+
+#define HARP_ROT_Y	(319)		//1760
+#define HARP_SCALE	(2.0f)
 
 #ifdef  __cplusplus
 }

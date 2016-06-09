@@ -113,7 +113,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.;include;$(RSSDK_DIR)/include;$(RSSDK_DIR)/sample/common/include;Resource;../dep/freeglut/include;../dep/glew/include;..\dep\glm;..\dep\assimp\include%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;include;$(RSSDK_DIR)/include;$(RSSDK_DIR)/sample/common/include;Resource;../dep/freeglut/include;../dep/glew/include;..\dep\glm;..\dep\assimp\include;$(ProjectDir)..\dep\FMOD\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN64;_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;_WIN64_WINNT=0x0602;;GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -129,11 +129,11 @@
       <AdditionalIncludeDirectories>.;include;$(RSSDK_DIR)/include;$(RSSDK_DIR)/sample/common/include;Resource;../dep/freeglut/include;../dep/glew/include;..\dep\glm;..\dep\include%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>libpxc_d.lib;libpxcutils_d.lib;glew32s.lib;freeglut.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>fmodL64_vc.lib;libpxc_d.lib;libpxcutils_d.lib;glew32s.lib;freeglut.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>../dep/freeglut/lib/x64;../dep/glew/x64;../dep/assimp/lib/$(Configuration);$(RSSDK_DIR)/lib/$(PlatformName);$(RSSDK_DIR)/sample/common/lib/$(PlatformName)/$(PlatformToolset);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\dep\FMOD\lib;../dep/freeglut/lib/x64;../dep/glew/x64;../dep/assimp/lib/$(Configuration);$(RSSDK_DIR)/lib/$(PlatformName);$(RSSDK_DIR)/sample/common/lib/$(PlatformName)/$(PlatformToolset);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -175,7 +175,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>.;include;$(RSSDK_DIR)/include;$(RSSDK_DIR)/sample/common/include;Resource;../dep/freeglut/include;../dep/glew/include;..\dep\glm;..\dep\assimp\include%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;include;$(RSSDK_DIR)/include;$(RSSDK_DIR)/sample/common/include;Resource;../dep/freeglut/include;../dep/glew/include;..\dep\glm;..\dep\assimp\include;$(ProjectDir)..\dep\FMOD\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN64;_CRT_SECURE_NO_WARNINGS;NDEBUG;_CONSOLE;_WIN64_WINNT=0x0602;;GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -195,8 +195,8 @@
       <AdditionalIncludeDirectories>.;include;$(RSSDK_DIR)/include;$(RSSDK_DIR)/sample/common/include;Resource;../dep/freeglut/include;../dep/glew/include;..\dep\glm;..\dep\include%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>libpxc.lib;libpxcutils.lib;glew32s.lib;freeglut.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../dep/freeglut/lib/x64;../dep/glew/x64;../dep/assimp/lib/$(Configuration);$(RSSDK_DIR)/lib/$(PlatformName);$(RSSDK_DIR)/sample/common/lib/$(PlatformName)/$(PlatformToolset);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>fmodL64_vc.lib;libpxc.lib;libpxcutils.lib;glew32s.lib;freeglut.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\dep\FMOD\lib;../dep/freeglut/lib/x64;../dep/glew/x64;../dep/assimp/lib/$(Configuration);$(RSSDK_DIR)/lib/$(PlatformName);$(RSSDK_DIR)/sample/common/lib/$(PlatformName)/$(PlatformToolset);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
@@ -208,6 +208,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="FMOD\common.cpp" />
+    <ClCompile Include="FMOD\common_platform.cpp" />
+    <ClCompile Include="FMOD\play_sound.cpp" />
     <ClCompile Include="src\camera.cpp" />
     <ClCompile Include="src\HandsController.cpp" />
     <ClCompile Include="src\HandsModel.cpp" />
@@ -219,6 +222,8 @@
     <ClCompile Include="src\Tree.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FMOD\common.h" />
+    <ClInclude Include="FMOD\common_platform.h" />
     <ClInclude Include="include\camera.h" />
     <ClInclude Include="include\config.h" />
     <ClInclude Include="include\Defs.h" />

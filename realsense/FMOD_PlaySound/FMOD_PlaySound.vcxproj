@@ -154,6 +154,7 @@
   <ItemGroup>
     <ClCompile Include="src\common.cpp" />
     <ClCompile Include="src\common_platform.cpp" />
+    <ClCompile Include="src\fmod.cpp" />
     <ClCompile Include="src\play_sound.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

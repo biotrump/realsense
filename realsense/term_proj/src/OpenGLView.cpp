@@ -59,7 +59,15 @@ void OpenGLView::pauseView()
 
 //===========================================================================//
 
-bool OpenGLView::OnKeyboard(int Key)
+void OpenGLView::KeyboardCB(unsigned char Key, int x, int y)
+{
+	bool ret = false;
+	ret = modelKeyboardCB(Key, x , y);
+	//return ret;
+}
+
+//bool OpenGLView::OnKeyboard(int Key)
+void OpenGLView::SpecialKeyboardCB(int Key, int x, int y)
 {
 	bool Ret = false;
 
@@ -105,16 +113,16 @@ bool OpenGLView::OnKeyboard(int Key)
 		} 
 	}
 
-	return Ret;
+	//return Ret;
 }
 
 //===========================================================================//
-
+/*
 void OpenGLView::SpecialKeyboardCB(int Key, int x, int y)
 {
 	OnKeyboard(Key);
 }
-
+*/
 
 //===========================================================================//
 
@@ -588,6 +596,7 @@ void OpenGLView::InitializeGlutCallbacks()
 {
 	glutDisplayFunc(this->RenderSceneCB);
 	glutSpecialFunc(SpecialKeyboardCB);
+	glutKeyboardFunc(KeyboardCB);
 	glutMouseFunc(mouseDownCB);
 	glutMotionFunc(mouseMoveCB);
 }

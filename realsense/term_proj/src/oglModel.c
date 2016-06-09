@@ -12,7 +12,7 @@
 // The vc8 solution links against assimp-release-dll_win32 - be sure to
 // have this configuration built.
 // ----------------------------------------------------------------------------
-*/
+
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -28,6 +28,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+#include "oglModel.h"
 /* the global Assimp scene object
 http://www.learnopengl.com/#!Model-Loading/Assimp
 Assimp is able to import dozens of different model file formats (and export to some as well) 
@@ -45,7 +46,8 @@ GLuint scene_list = 0;
 struct aiVector3D scene_min, scene_max, scene_center;
 
 /* current rotation angle */
-static float angle = 70.f;
+static float angle = HARP_ROT_Y;//harp 3D	//0.f;
+static float model_scale = HARP_SCALE;
 
 #define aisgl_min(x,y) (x<y?x:y)
 #define aisgl_max(x,y) (y>x?y:x)
@@ -293,7 +295,7 @@ void modelDisplay(void)
 	tmp = scene_max.x-scene_min.x;
 	tmp = aisgl_max(scene_max.y - scene_min.y,tmp);
 	tmp = aisgl_max(scene_max.z - scene_min.z,tmp);
-	tmp = 1.f / tmp;
+	tmp = model_scale / tmp;
 	glScalef(tmp, tmp, tmp);
 
         /* center the model */
@@ -459,5 +461,61 @@ int oglModelLoad(char path[])
 #endif
 
 	return 0;
+}
+
+int modelKeyboardCB(unsigned char Key, int x, int y)
+{
+	int ret = 0;
+	switch (Key)
+	{
+	case 27:
+		glutLeaveMainLoop();
+		ret = 1;
+		break;
+	case 'w':
+		break;
+	case 's':
+		break;
+	case 'a':
+		angle--;
+		printf("%c, angle=%f\n", Key, angle);
+		ret = 1;
+		break;
+	case 'z': {
+		model_scale += 0.1;
+		/* scale the whole asset to fit into our view frustum */
+		float tmp = scene_max.x - scene_min.x;
+		tmp = aisgl_max(scene_max.y - scene_min.y, tmp);
+		tmp = aisgl_max(scene_max.z - scene_min.z, tmp);
+		tmp = model_scale / tmp;
+		glScalef(tmp, tmp, tmp);
+		printf("%c\n", Key);
+		ret = 1;
+	}
+			  break;
+	case 'd':
+		angle++;
+		printf("%c, angle=%f\n", Key, angle);
+		ret = 1;
+		break;
+	case 'x': {
+		model_scale -= 0.1;
+		if (model_scale < 0.2f)
+			model_scale = 0.2f;
+		/* scale the whole asset to fit into our view frustum */
+		float tmp = scene_max.x - scene_min.x;
+		tmp = aisgl_max(scene_max.y - scene_min.y, tmp);
+		tmp = aisgl_max(scene_max.z - scene_min.z, tmp);
+		tmp = model_scale / tmp;
+		glScalef(tmp, tmp, tmp);
+		printf("%c\n", Key);
+		ret = 1;
+	}
+			  break;
+	default:
+		printf("%c\n", Key);
+		break;
+	}
+	return ret;
 }
 

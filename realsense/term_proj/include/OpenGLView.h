@@ -62,8 +62,9 @@ namespace ModelViewController
 		static void renderBitmapString(float x, float y, void *font,const char *string);
 		static void printInstructions();
 		
-		static bool OnKeyboard(int Key);
+		//static bool OnKeyboard(int Key);
 		static void SpecialKeyboardCB(int Key, int x, int y);
+		static void KeyboardCB(unsigned char Key, int x, int y);
 		static void setVSync(bool sync);
 
 		static void close();

@@ -290,7 +290,7 @@ void modelDisplay(void)
 
 #endif
 	/* rotate it around the y axis */
-	glRotatef(angle, 0.f, 1.f, 0.f);
+	glRotatef(angle, 0.f, 1.0f, 0.f);
 	/* scale the whole asset to fit into our view frustum */
 	tmp = scene_max.x-scene_min.x;
 	tmp = aisgl_max(scene_max.y - scene_min.y,tmp);

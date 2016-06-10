@@ -32,7 +32,7 @@ Extremities : 2 hands, medium hand speed, SR300 ??120 cm
 command line  : -full , full hand mode
 */
 
-bool start(bool isFullHand)
+bool start(bool isFullHand, char *assimp_mpath)
 {
 	pxcStatus status = PXC_STATUS_ALLOC_FAILED;
 
@@ -53,7 +53,7 @@ bool start(bool isFullHand)
 	}
 
 	// Create Openglview which implements IView (allows creations of different views)
-	openGLView = new ModelViewController::OpenGLView(isFullHand);
+	openGLView = new ModelViewController::OpenGLView(isFullHand, assimp_mpath);
 	if(!openGLView)
 	{
 		return false;
@@ -116,7 +116,7 @@ int main(int argc, char** argv)
 	// Full hand mode
 	if(isFullHand)
 	{
-		if(!start(isFullHand))
+		if(!start(isFullHand, argv[1]))
 		{
 			std::printf("Failed at Initialization\n");
 			releaseAll();
@@ -125,10 +125,10 @@ int main(int argc, char** argv)
 	// Cursor hand
 	else
 	{
-		if(!start(isFullHand))
+		if(!start(isFullHand, argv[1]))
 		{
 			releaseAll();
-			if(!start(!isFullHand))
+			if(!start(!isFullHand, argv[1]))
 			{
 				std::printf("Failed at Initialization\n");
 				releaseAll();

@@ -137,6 +137,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>libcmt.lib</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -212,6 +213,7 @@
     <ClCompile Include="FMOD\common_platform.cpp" />
     <ClCompile Include="FMOD\play_sound.cpp" />
     <ClCompile Include="src\camera.cpp" />
+    <ClCompile Include="src\CursorModel.cpp" />
     <ClCompile Include="src\HandsController.cpp" />
     <ClCompile Include="src\HandsModel.cpp" />
     <ClCompile Include="src\main.cpp" />

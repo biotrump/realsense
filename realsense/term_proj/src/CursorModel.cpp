@@ -1,16 +1,15 @@
-#include "HandsModel.h"
-#include "pxchandmodule.h"
-#include "pxchanddata.h"
-#include "pxchandconfiguration.h"
+#include "CursorModel.h"
+#include "pxchandcursormodule.h"
 #include "pxccursorconfiguration.h"
+#include "pxchanddata.h"
 
 using namespace ModelViewController;
 
-#define MAX_NUMBER_OF_JOINTS 22
+#define MAX_NUMBER_OF_JOINTS 1
 
 //===========================================================================//
 
-HandsModel::HandsModel() : m_rightHandExist(false),m_leftHandExist(false),m_depthmap(0),m_imageWidth(640),m_imageHeight(480)
+CursorModel::CursorModel() : m_rightHandExist(false),m_leftHandExist(false),m_depthmap(0),m_imageWidth(640),m_imageHeight(480)
 {
 	m_skeletonTree = new Tree<PointData>[MAX_NUMBER_OF_HANDS];
 	m_fullHandMode = false;
@@ -21,25 +20,23 @@ HandsModel::HandsModel() : m_rightHandExist(false),m_leftHandExist(false),m_dept
 
 //===========================================================================//
 
-HandsModel::HandsModel(const HandsModel& src)
+CursorModel::CursorModel(const CursorModel& src)
 {
 	*this = src;
 }
 
 //===========================================================================//
 
-HandsModel& HandsModel::operator=(const HandsModel& src)
+CursorModel& CursorModel::operator=(const CursorModel& src)
 {
 	if (&src == this) return *this;
 	int treeSize = sizeof(Tree<PointData>) * MAX_NUMBER_OF_HANDS;
 	int depthMapLength = sizeof(src.m_depthmap) / sizeof(src.m_depthmap[0]);
 	memcpy_s(m_skeletonTree,treeSize,src.m_skeletonTree,treeSize);
-
 	m_depthmap = new pxcBYTE[depthMapLength];
 	memcpy_s(m_depthmap, sizeof(src.m_depthmap), src.m_depthmap, sizeof(src.m_depthmap));
-	m_handModule = src.m_handModule;
-	
-	m_handData = src.m_handData;
+	m_handCursorModule = src.m_handCursorModule;
+	m_cursorData = src.m_cursorData;
 	m_imageHeight = src.m_imageHeight;
 	m_imageWidth = src.m_imageWidth;
 	m_leftHandExist = src.m_leftHandExist;
@@ -50,38 +47,38 @@ HandsModel& HandsModel::operator=(const HandsModel& src)
 
 //===========================================================================//
 
-pxcStatus HandsModel::Init(PXCSenseManager* senseManager)
+pxcStatus CursorModel::Init(PXCSenseManager* senseManager)
 {
 	m_senseManager = senseManager;
 
 	// Error checking Status
 	pxcStatus status = PXC_STATUS_INIT_FAILED;
 
-	// Enable hands module in the multi modal pipeline
-	status = senseManager->EnableHand();
+	// Enable hands cursor module in the multi modal pipeline
+	status = senseManager->EnableHandCursor();
 	if(status != PXC_STATUS_NO_ERROR)
 	{
 		return status;
 	}
-
-	// Retrieve hand module if ready - called in the setup stage before AcquireFrame
-	m_handModule = senseManager->QueryHand();
-	if(!m_handModule)
+	
+	// Retrieve hand cursor module if ready - called in the setup stage before AcquireFrame
+	m_handCursorModule = senseManager->QueryHandCursor();
+	if(!m_handCursorModule)
 	{
 		return status;
 	}
 
-	// Retrieves an instance of the PXCHandData interface
-	m_handData = m_handModule->CreateOutput();
-	if(!m_handData)
+	// Retrieves an instance of the PXCCursorData interface
+	m_cursorData = m_handCursorModule->CreateOutput();
+
+	if(!m_cursorData)
 	{
 		return PXC_STATUS_INIT_FAILED;
 	}
 
 	// Apply desired hand configuration
-	PXCHandConfiguration* config = m_handModule->CreateActiveConfiguration();
+	PXCCursorConfiguration* config = m_handCursorModule->CreateActiveConfiguration();
 	config->EnableAllGestures();
-	config->EnableSegmentationImage(false);
 	config->ApplyChanges();
 	config->Release();
 	config = NULL;
@@ -93,12 +90,13 @@ pxcStatus HandsModel::Init(PXCSenseManager* senseManager)
 
 //===========================================================================//
 
-void HandsModel::pause(bool isPause,bool isModel)
+void CursorModel::pause(bool isPause,bool isModel)
 {
 	m_senseManager->QueryCaptureManager()->SetPause(isPause);
 	if(!isModel)
 	{
-		m_senseManager->PauseHand(isPause);
+		m_senseManager->PauseHandCursor(isPause);
+
 		if(isPause)
 			m_isPaused = false;
 	}
@@ -108,11 +106,11 @@ void HandsModel::pause(bool isPause,bool isModel)
 
 //===========================================================================//
 
-void HandsModel::update2DImage()
+void CursorModel::update2DImage()
 {
 	// Get camera streams
 	PXCCapture::Sample *sample;
-	sample = (PXCCapture::Sample*)m_senseManager->QueryHandSample();
+	sample = (PXCCapture::Sample*)m_senseManager->QueryHandCursorSample();
 	
 	if(sample && sample->depth)
 	{
@@ -137,7 +135,7 @@ void HandsModel::update2DImage()
 
 //===========================================================================//
 
-bool HandsModel::get2DImage(pxcBYTE* depthmap)
+bool CursorModel::get2DImage(pxcBYTE* depthmap)
 {
 	if(m_depthmap)
 	{
@@ -151,14 +149,14 @@ bool HandsModel::get2DImage(pxcBYTE* depthmap)
 
 //===========================================================================//
 
-pxcI32 HandsModel::get2DImageHeight()
+pxcI32 CursorModel::get2DImageHeight()
 {
 	return m_imageHeight;
 }
 
 //===========================================================================//
 
-pxcI32 HandsModel::get2DImageWidth()
+pxcI32 CursorModel::get2DImageWidth()
 {
 	return m_imageWidth;
 }
@@ -166,53 +164,42 @@ pxcI32 HandsModel::get2DImageWidth()
 
 //===========================================================================//
 
-bool HandsModel::hasRightHand()
+bool CursorModel::hasRightHand()
 {
 	return m_rightHandExist;
 }
 
 //===========================================================================//
 
-bool HandsModel::hasLeftHand()
+bool CursorModel::hasLeftHand()
 {
 	return m_leftHandExist;
 }
 
 //===========================================================================//
 
-void HandsModel::initSkeletonTree(Tree<PointData>* tree)
+void CursorModel::initSkeletonTree(Tree<PointData>* tree)
 {
 	PointData jointData;
 	memset(&jointData,0,sizeof(PointData));
 	Node<PointData> rootDataNode(jointData);
-	
-	for(int i = 2 ; i < MAX_NUMBER_OF_JOINTS - 3 ; i+=4)
-	{				
-		Node<PointData> dataNode(jointData);
-		Node<PointData> dataNode1(jointData);
-		Node<PointData> dataNode2(jointData);
-		Node<PointData> dataNode3(jointData);
-		
-		dataNode1.add(dataNode);
-		dataNode2.add(dataNode1);
-		dataNode3.add(dataNode2);
-		rootDataNode.add(dataNode3);
-	}
 
 	tree->setRoot(rootDataNode);
 }
 
 //===========================================================================//
 
-bool HandsModel::updateModel()
+bool CursorModel::updateModel()
 {
-
-	// Update hands data with current frame information
-	if(m_handData->Update()!= PXC_STATUS_NO_ERROR)
+	// Update cursors data with current frame information
+	if(m_cursorData->Update()!= PXC_STATUS_NO_ERROR)
 		return false;
 	
 	// Update skeleton tree model
 	updateskeletonTree();
+
+	// Update gesture data
+	updateGestureData();
 
 	// Update image
 	update2DImage();
@@ -222,103 +209,82 @@ bool HandsModel::updateModel()
 
 //===========================================================================//
 
-bool HandsModel::isModelPaused()
+bool CursorModel::isModelPaused()
 {
 	return m_isPaused;
 }
 
 //===========================================================================//
 
-void HandsModel::updateskeletonTree()
+void CursorModel::updateGestureData()
 {
-	m_rightHandExist = false;
-	m_leftHandExist = false;
-
-	// Iterate over hands
-	int numOfHands = m_handData->QueryNumberOfHands();
-	for(int index = 0 ; index < numOfHands ; ++index)
+	PXCCursorData::GestureData gestureData;
+	int numOfCursors = m_cursorData->QueryNumberOfCursors();
+	if(numOfCursors == 2)
 	{
-		// Get hand by access order of entering time
-		PXCHandData::IHand* handOutput = NULL;
-		if(m_handData->QueryHandData(PXCHandData::ACCESS_ORDER_BY_TIME,index,handOutput) == PXC_STATUS_NO_ERROR)
+		if(m_cursorData->IsGestureFired(PXCCursorData::CURSOR_CLICK,gestureData))
 		{
-			// Get hand body side (left, right, unknown)
-			int side = 0;
-			if(handOutput->QueryBodySide() == PXCHandData::BodySideType::BODY_SIDE_RIGHT)
+			if(gestureData.label == PXCCursorData::CURSOR_CLICK)
 			{
-				m_rightHandExist = true;
-				side = 0;
+				m_gestureFired = !m_gestureFired;
+
+				pause(m_gestureFired,true);
 			}
-			else if (handOutput->QueryBodySide() == PXCHandData::BodySideType::BODY_SIDE_LEFT)
-			{
-				m_leftHandExist = true;
-				side = 1;
-			}
-
-			PXCHandData::JointData jointData;
-			handOutput->QueryTrackedJoint(PXCHandData::JointType::JOINT_WRIST,jointData);
-			PointData pointData;
-			copyJointToPoint(pointData,jointData);
-
-			Node<PointData> rootDataNode(pointData);
-
-			// Iterate over hand joints
-			for(int i = 2 ; i < MAX_NUMBER_OF_JOINTS - 3 ; i+=4)
-			{				
-				handOutput->QueryTrackedJoint((PXCHandData::JointType)(i+3),jointData);
-				copyJointToPoint(pointData,jointData);
-				Node<PointData> dataNode(pointData);
-				handOutput->QueryTrackedJoint((PXCHandData::JointType)(i+2),jointData);
-				copyJointToPoint(pointData,jointData);
-				Node<PointData> dataNode1(pointData);
-				handOutput->QueryTrackedJoint((PXCHandData::JointType)(i+1),jointData);
-				copyJointToPoint(pointData,jointData);
-				Node<PointData> dataNode2(pointData);
-				handOutput->QueryTrackedJoint((PXCHandData::JointType)(i),jointData);
-				copyJointToPoint(pointData,jointData);
-				Node<PointData> dataNode3(pointData);
-
-				dataNode1.add(dataNode);
-				dataNode2.add(dataNode1);
-				dataNode3.add(dataNode2);
-				rootDataNode.add(dataNode3);
-			}
-
-			m_skeletonTree[side].setRoot(rootDataNode);
-
 		}
 	}
 }
 
-void HandsModel::copyJointToPoint(PointData & dst,const PXCHandData::JointData & src)
+//===========================================================================//
+
+void CursorModel::updateskeletonTree()
 {
-	dst.confidence = src.confidence;
-	dst.globalOrientation = src.globalOrientation;
-	dst.localRotation = src.localRotation;
-	dst.positionImage = src.positionImage;
-	dst.positionWorld = src.positionWorld;
-	dst.speed = src.speed;
+	m_rightHandExist = false;
+	m_leftHandExist = false;
+
+	// Iterate over cursors
+	int numOfCursors = m_cursorData->QueryNumberOfCursors();
+	for(int index = 0 ; index < numOfCursors ; ++index)
+	{
+		PXCCursorData::ICursor* cursor;
+		if(m_cursorData->QueryCursorData(PXCCursorData::ACCESS_ORDER_BY_TIME,index,cursor) == PXC_STATUS_NO_ERROR)
+		{
+			// Get hand body side (left, right, unknown)
+			int side = 0;
+			if(cursor->QueryBodySide() == PXCHandData::BodySideType::BODY_SIDE_RIGHT)
+			{
+				m_rightHandExist = true;
+				side = 0;
+			}
+			else if (cursor->QueryBodySide() == PXCHandData::BodySideType::BODY_SIDE_LEFT)
+			{
+				m_leftHandExist = true;
+				side = 1;
+			}
+			PointData cursorData = {};
+			PXCPoint3DF32 point = cursor->QueryCursorWorldPoint();
+			cursorData.positionWorld = point;
+			m_skeletonTree[side].setRoot(cursorData);
+		}		
+	}	
 }
-
-
 
 //===========================================================================//
 
-Tree<PointData>* HandsModel::getSkeletonTree()
+Tree<PointData>* CursorModel::getSkeletonTree()
 {
 	return m_skeletonTree;
 }
 
 //===========================================================================//
 
-void HandsModel::setSkeleton(Tree<PointData>* skeletonTree)
+void CursorModel::setSkeleton(Tree<PointData>* skeletonTree)
 {
 	m_skeletonTree = skeletonTree;
 }
 
 //===========================================================================//
 
-HandsModel::~HandsModel()
+CursorModel::~CursorModel()
 {
 	if(m_skeletonTree)
 		delete [] m_skeletonTree;

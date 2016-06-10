@@ -4,7 +4,7 @@ INTEL CORPORATION PROPRIETARY INFORMATION
 This software is supplied under the terms of a license agreement or nondisclosure
 agreement with Intel Corporation and may not be copied or disclosed except in
 accordance with the terms of that agreement
-Copyright(c) 2011-2015 Intel Corporation. All Rights Reserved.
+Copyright(c) 2011-2016 Intel Corporation. All Rights Reserved.
  
 *******************************************************************************/
 #pragma once
@@ -15,7 +15,7 @@ Copyright(c) 2011-2015 Intel Corporation. All Rights Reserved.
 #include <thread>
 #include <mutex>
 
-#include "HandsModel.h"
+#include "IModel.h"
 #include "OpenGlView.h"
 
 #include "timer.h"
@@ -27,15 +27,15 @@ namespace ModelViewController
 	class HandsController
 	{
 	public:
-		HandsController(HandsModel* model, IView* view);
+		HandsController(IModel* model, IView* view);
 		void updateView();
 		~HandsController();
 	private:
-		HandsModel* m_model;
+		IModel* m_model;
 		IView *m_view;
 
-		Tree<PXCHandData::JointData>* m_skeletonTree;
-		Tree<PXCHandData::JointData>* m_skeletonTreeTmp;
+		Tree<PointData>* m_skeletonTree;
+		Tree<PointData>* m_skeletonTreeTmp;
 
 		std::mutex m_mutex;
 

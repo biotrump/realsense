@@ -23,7 +23,8 @@ bool OpenGLView::m_isBones = false;
 bool OpenGLView::m_isFullHand = false;
 bool OpenGLView::m_stop = false;
 
-Tree<PXCHandData::JointData>* OpenGLView::m_skeletonTree = new Tree<PXCHandData::JointData>[2];
+Tree<PointData>* OpenGLView::m_skeletonTree = NULL;
+
 std::vector<PXCPoint3DF32> OpenGLView::m_cursorPoints[2] = {};
 
 bool OpenGLView::m_hasLeftHand = false;
@@ -323,7 +324,7 @@ void timer(int value)
 {
 	glutTimerFunc(25,timer,value++);
 	if(!m_internalStop)
-	glutPostRedisplay();
+		glutPostRedisplay();
 }
 
 /******************************************************************************/
@@ -532,7 +533,8 @@ void OpenGLView::RenderSceneCB()
 		}
 	}
 
-	modelDisplay();//update assimp 3d model scene
+	//modelDisplay();//update assimp 3d model scene
+
 	glutSwapBuffers();
 
 	m_mutex.unlock();
@@ -618,7 +620,6 @@ void OpenGLView::switchTrackingMode()
 //path[] :the 3d model path
 OpenGLView::OpenGLView(bool isFullHand, const char path[])
 {
-	m_f3dmodel = false;
 	m_isFullHand = isFullHand;
 	if (path && strlen(path)) {
 		m_modelPath=new char[strlen(path) + 1];
@@ -684,8 +685,8 @@ void OpenGLView::init()
 	//load 3d model before glut init
 	if (m_modelPath && strlen(m_modelPath)) {
 		ret = oglModelLoad(m_modelPath);
-		if (ret == 0)
-			m_f3dmodel = true;
+		//if (ret == 0)
+		//	m_f3dmodel = true;
 	}
 
 	// Must be done after glut is initialized!
@@ -709,7 +710,7 @@ void OpenGLView::init()
 
 //===========================================================================//
 
-void OpenGLView::recursiveDrawBones(Node<PXCHandData::JointData> node, PXCPoint3DF32 pGlobal)
+void OpenGLView::recursiveDrawBones(Node<PointData> node, PXCPoint3DF32 pGlobal)
 {
 	if(node.getChildNodes().size() == 0)
 		return;
@@ -758,7 +759,7 @@ void OpenGLView::drawBones(int index, bool applyTransformFlag)
 
 }
 
-void OpenGLView::recursiveDrawJoints(Node<PXCHandData::JointData> node,PXCPoint3DF32 pGlobal)
+void OpenGLView::recursiveDrawJoints(Node<PointData> node,PXCPoint3DF32 pGlobal)
 {
 	const PXCPoint3DF32 p0 = vec(node.getNodeValue().positionWorld);
 
@@ -872,7 +873,7 @@ void OpenGLView::draw3DSkeleton(int index, bool applyTransformFlag)
 
 //===========================================================================//
 
-void OpenGLView::display3DSkeleton(Tree<PXCHandData::JointData>* skeletonTree,bool hasLeftHand, bool hasRightHand)
+void OpenGLView::display3DSkeleton(Tree<PointData>* skeletonTree,bool hasLeftHand, bool hasRightHand)
 {
 	m_hasLeftHand = hasLeftHand;
 	m_hasRightHand = hasRightHand;
@@ -905,12 +906,6 @@ void OpenGLView::display3DSpace() {}
 
 OpenGLView::~OpenGLView() 
 {
-	if(m_skeletonTree)
-		delete [] m_skeletonTree;
-	if(m_image)
-		delete [] m_image;
-	if(DepthTex)
-		delete DepthTex;
 
 //	FMOD_ShutDown();
 }

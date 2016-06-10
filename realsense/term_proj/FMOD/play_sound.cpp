@@ -264,6 +264,12 @@ int FMOD_ShutDown(void)
 	return result;
 }
 
+int FMOD_Play(int keynote)
+{
+	FMOD_RESULT result = fmod_system->playSound(fmod_sounds[keynote], 0, false, &channel);
+	ERRCHECK(result);
+	return result;
+}
 int fmodKeyboardCB(unsigned char Key, int x, int y)
 {
 	int ret = 0;

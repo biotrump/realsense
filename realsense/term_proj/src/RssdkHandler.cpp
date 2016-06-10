@@ -2,10 +2,10 @@
 #include "pxcmetadata.h"
 #include "service/pxcsessionservice.h"
 
-RssdkHandler::RssdkHandler(HandsController* handsController, HandsModel* handsModel, IView* view)
+RssdkHandler::RssdkHandler(HandsController* handsController, IModel* model, IView* view)
 {
 	m_handsController = handsController;
-	m_handsModel = handsModel;
+	m_model = model;
 	m_view = view;
 }
 
@@ -39,7 +39,7 @@ pxcStatus RssdkHandler::Init(bool isFullHand, const pxcCHAR* sequencePath)
 		}
 	}
 
-	status = m_handsModel->Init(m_senseManager,isFullHand);
+	status = m_model->Init(m_senseManager);
 	if(status != PXC_STATUS_NO_ERROR)
 	{
 		return status;
@@ -49,30 +49,16 @@ pxcStatus RssdkHandler::Init(bool isFullHand, const pxcCHAR* sequencePath)
 	status = m_senseManager->Init();
 	if(status != PXC_STATUS_NO_ERROR)
 	{
-		if(!isFullHand)
-		{
-			release();
-			m_view->switchTrackingMode();
-			status = Init(true,sequencePath);
-			if(status != PXC_STATUS_NO_ERROR)
-			{
-				return status;
-			}
-		}
-		else
-		{
-			return status;		
-		}
-	}
-	else
-	{
-		m_view->init();
+		return status;		
 	}
 
+	m_view->init();
 	
 	//If we got to this stage return success
 	return PXC_STATUS_NO_ERROR;
 }
+
+//===========================================================================//
 
 void RssdkHandler::Start()
 {
@@ -86,12 +72,14 @@ void RssdkHandler::Start()
 
 }
 
+//===========================================================================//
+
 bool RssdkHandler::getFrame()
 {
 	//Start working on current frame
 	while(m_senseManager->AcquireFrame(true) == PXC_STATUS_NO_ERROR && !m_view->stop())
 	{
-		m_handsModel->updateModel();
+		m_model->updateModel();
 
 		m_handsController->updateView();
 
@@ -101,6 +89,7 @@ bool RssdkHandler::getFrame()
 	return true;
 }
 
+//===========================================================================//
 
 void RssdkHandler::release()
 {

@@ -2,14 +2,18 @@
 
 using namespace ModelViewController;
 
-HandsController::HandsController(HandsModel* model, IView* view)
+HandsController::HandsController(IModel* model, IView* view)
 {
 	m_model = model;
 	m_view = view;
-	m_skeletonTree = new Tree<PXCHandData::JointData>[MAX_NUMBER_OF_HANDS];
-	m_skeletonTreeTmp = new Tree<PXCHandData::JointData>[MAX_NUMBER_OF_HANDS];
+	m_skeletonTree = new Tree<PointData>[MAX_NUMBER_OF_HANDS];
+	m_skeletonTreeTmp = new Tree<PointData>[MAX_NUMBER_OF_HANDS];
+
 	m_model->initSkeletonTree(m_skeletonTree);
 	m_model->initSkeletonTree(m_skeletonTreeTmp);
+
+	//init viewer skeleton
+	m_view->display3DSkeleton(m_skeletonTreeTmp,false,false);
 }
 
 //===========================================================================//

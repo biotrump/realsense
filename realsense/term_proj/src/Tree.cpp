@@ -1,63 +1,64 @@
 #include "Tree.h"
+#include "pxchanddata.h"
 
-Node<PXCHandData::JointData>::Node(PXCHandData::JointData jointData)
+Node<PointData>::Node(PointData jointData)
 {
 	m_nodeValue = jointData;
 }
 //===========================================================================//
 
-Node<PXCHandData::JointData>::Node() {}
+Node<PointData>::Node() {}
 
 //===========================================================================//
 
-Node<PXCHandData::JointData>::~Node() {}
+Node<PointData>::~Node() {}
 
 //===========================================================================//
 
-void Node<PXCHandData::JointData>::add(Node<PXCHandData::JointData> node)
+void Node<PointData>::add(Node<PointData> node)
 {
 	m_nodes.push_back(node);
 }
 
 //===========================================================================//
 
-PXCHandData::JointData Node<PXCHandData::JointData>::getNodeValue()
+PointData Node<PointData>::getNodeValue()
 {
 	return m_nodeValue;
 }
 
 //===========================================================================//
 
-std::vector<Node<PXCHandData::JointData>> Node<PXCHandData::JointData>::getChildNodes()
+std::vector<Node<PointData>> Node<PointData>::getChildNodes()
 {
 	return m_nodes;
 }
 
 //===========================================================================//
 
-Tree<PXCHandData::JointData>::Tree(Node<PXCHandData::JointData> rootNode)
+Tree<PointData>::Tree(Node<PointData> rootNode)
 {
 	m_root = rootNode;
 }
 
 //===========================================================================//
 
-void Tree<PXCHandData::JointData>::setRoot(Node<PXCHandData::JointData> rootNode)
+void Tree<PointData>::setRoot(Node<PointData> rootNode)
 {
 	m_root = rootNode;
 }
 
 //===========================================================================//
 
-Node<PXCHandData::JointData> Tree<PXCHandData::JointData>::getRoot()
+Node<PointData> Tree<PointData>::getRoot()
 {
 	return m_root;
 }
 
 //===========================================================================//
 
-Tree<PXCHandData::JointData>::Tree() {}
+Tree<PointData>::Tree() {}
 
 //===========================================================================//
 
-Tree<PXCHandData::JointData>::~Tree() {}
+Tree<PointData>::~Tree() {}

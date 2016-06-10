@@ -4,7 +4,7 @@ INTEL CORPORATION PROPRIETARY INFORMATION
 This software is supplied under the terms of a license agreement or nondisclosure
 agreement with Intel Corporation and may not be copied or disclosed except in
 accordance with the terms of that agreement
-Copyright(c) 2011-2015 Intel Corporation. All Rights Reserved.
+Copyright(c) 2011-2016 Intel Corporation. All Rights Reserved.
  
 *******************************************************************************/
 #pragma once
@@ -19,43 +19,37 @@ Copyright(c) 2011-2015 Intel Corporation. All Rights Reserved.
 #include "pxcsession.h"
 #include "pxcsensemanager.h"
 #include "PXCHandConfiguration.h"
+#include "pxchandcursormodule.h"
 
-#include "Tree.h"
-
-
-
-#define MAX_NUMBER_OF_HANDS 2
-#define MAX_NUMBER_OF_JOINTS 22
+#include "IModel.h"
 
 namespace ModelViewController
 {
-	class HandsModel
+	class HandsModel : public IModel
 	{
 	public:
 		HandsModel();
 		HandsModel(const HandsModel& src);
 		HandsModel& operator=(const HandsModel& src);
 		~HandsModel();
-		pxcStatus Init(PXCSenseManager* senseManager,bool isFullHand);
-		void initSkeletonTree(Tree<PXCHandData::JointData>* tree);
-		Tree<PXCHandData::JointData>* getSkeletonTree();
-		void setSkeleton(Tree<PXCHandData::JointData>* skeletonTree);
-		bool updateModel();
-		bool hasRightHand();
-		bool hasLeftHand();
-		bool get2DImage(pxcBYTE* depthmap);
-		pxcI32 get2DImageHeight();
-		pxcI32 get2DImageWidth();
-		bool isModelPaused();
-		void pause(bool isPause, bool isModel);
-		bool isFullHandMode();
+		virtual pxcStatus Init(PXCSenseManager* senseManager);
+		virtual void initSkeletonTree(Tree<PointData>* tree);
+		virtual Tree<PointData>* getSkeletonTree();
+		virtual void setSkeleton(Tree<PointData>* skeletonTree);
+		virtual bool updateModel();
+		virtual bool hasRightHand();
+		virtual bool hasLeftHand();
+		virtual bool get2DImage(pxcBYTE* depthmap);
+		virtual pxcI32 get2DImageHeight();
+		virtual pxcI32 get2DImageWidth();
+		virtual bool isModelPaused();
+		virtual void pause(bool isPause, bool isModel);
 
 	private:
 		void updateSkeleton();
-		Tree<PXCHandData::JointData>* m_skeletonTree;
+		Tree<PointData>* m_skeletonTree;
 		void updateskeletonTree();
 		void update2DImage();
-		void updateCursorGestureData();
 		PXCHandModule* m_handModule;
 		PXCHandCursorModule* m_handCursorModule;
 		PXCHandData* m_handData;
@@ -69,6 +63,7 @@ namespace ModelViewController
 		bool m_isPaused;
 		bool m_gestureFired;
 		PXCSenseManager* m_senseManager;
+		void copyJointToPoint(PointData & dst,const PXCHandData::JointData & src);
 	};
 
 }

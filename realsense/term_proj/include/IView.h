@@ -4,7 +4,7 @@ INTEL CORPORATION PROPRIETARY INFORMATION
 This software is supplied under the terms of a license agreement or nondisclosure
 agreement with Intel Corporation and may not be copied or disclosed except in
 accordance with the terms of that agreement
-Copyright(c) 2011-2015 Intel Corporation. All Rights Reserved.
+Copyright(c) 2011-2016 Intel Corporation. All Rights Reserved.
  
 *******************************************************************************/
 #pragma once
@@ -22,7 +22,7 @@ namespace ModelViewController
 	{
 	public:
 		virtual void renderScene() = 0;
-		virtual void display3DSkeleton(Tree<PXCHandData::JointData>* skeletonTree,bool hasLeftHand, bool hasRightHand) = 0;
+		virtual void display3DSkeleton(Tree<PointData>* skeletonTree,bool hasLeftHand, bool hasRightHand) = 0;
 		virtual void display3DSpace() = 0;
 		virtual void displayFps(pxcI32 fps) = 0;
 		virtual void display2DImage(pxcBYTE* image,pxcI32 width,pxcI32 height) = 0;

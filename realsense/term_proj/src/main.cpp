@@ -6,8 +6,10 @@
 #include <iostream>
 
 #include "RssdkHandler.h"
+#include "HandsModel.h"
+#include "CursorModel.h"
 
-ModelViewController::HandsModel* handModel;
+ModelViewController::IModel* model;
 ModelViewController::IView* openGLView;
 ModelViewController::HandsController* controller;
 RssdkHandler* rssdkHandler;
@@ -29,51 +31,46 @@ Extremities : 2 hands, medium hand speed, SR300 ??120 cm
 
 command line  : -full , full hand mode
 */
-int main(int argc, char** argv)
+
+bool start(bool isFullHand)
 {
-	bool isFullHand = true;//false;
-	if(argc == 2)
-	{
-		if (strcmp(argv[1],"-full")==0)
-		{
-			isFullHand = true;
-		}
-	}
 	pxcStatus status = PXC_STATUS_ALLOC_FAILED;
 
-	// Create hand model
-	handModel = new ModelViewController::HandsModel();
-	if(!handModel)
+	if(isFullHand)
 	{
-		std::printf("Failed at Initialization\n");
-		releaseAll();
-		return -1;
+		// Create hand model
+		model = new ModelViewController::HandsModel();
+	}
+	else
+	{
+		// Create cursor model
+		model = new ModelViewController::CursorModel();
+	}
+
+	if(!model)
+	{
+		return false;
 	}
 
 	// Create Openglview which implements IView (allows creations of different views)
-	openGLView = new ModelViewController::OpenGLView(isFullHand, argv[1]);
+	openGLView = new ModelViewController::OpenGLView(isFullHand);
 	if(!openGLView)
 	{
-		std::printf("Failed at Initialization\n");
-		releaseAll();
-		return -1;
+		return false;
 	}
 
 	// When using sequence, change useSequence to true and apply sequencePath with sequence path
 	bool useSequence = false;
 	pxcCHAR* sequencePath = L"Insert Sequence Path Here";
-	
 
 	// Bind controller with model and view and start playing
-	controller = new ModelViewController::HandsController(handModel,openGLView);
+	controller = new ModelViewController::HandsController(model,openGLView);
 	if(!controller)
 	{
-		std::printf("Failed at Initialization\n");
-		releaseAll();
-		return -1;
+		return false;
 	}
 
-	rssdkHandler = new RssdkHandler(controller,handModel,openGLView);
+	rssdkHandler = new RssdkHandler(controller,model,openGLView);
 
 	if(useSequence)
 	{
@@ -84,27 +81,61 @@ int main(int argc, char** argv)
 
 		else
 		{
-			std::printf("Failed at Initialization\n");
-			releaseAll();
-			return -1;
+			return false;
 		}
 	}
 
+	// Live Camera
 	else
 	{
-		if(rssdkHandler->Init(isFullHand) == PXC_STATUS_NO_ERROR)
+		status = rssdkHandler->Init(isFullHand);
+		if(status == PXC_STATUS_NO_ERROR)
 		{
 			rssdkHandler->Start();
 		}
-
 		else
 		{
-			std::printf("Failed at Initialization\n");
-			releaseAll();
-			return -1;
+			return false;
 		}
 	}
 
+	return true;
+}
+
+int main(int argc, char** argv)
+{
+	bool isFullHand = true;//false;
+	if(argc == 2)
+	{
+		if (strcmp(argv[1],"-full")==0)
+		{
+			isFullHand = true;
+		}
+	}
+
+	// Full hand mode
+	if(isFullHand)
+	{
+		if(!start(isFullHand))
+		{
+			std::printf("Failed at Initialization\n");
+			releaseAll();
+		}
+	}
+	// Cursor hand
+	else
+	{
+		if(!start(isFullHand))
+		{
+			releaseAll();
+			if(!start(!isFullHand))
+			{
+				std::printf("Failed at Initialization\n");
+				releaseAll();
+			}			
+		}
+	}
+	
 	releaseAll();
     return 0;
 }
@@ -112,14 +143,26 @@ int main(int argc, char** argv)
 void releaseAll()
 {
 	//delete all pointers
-	if(handModel)
-		delete handModel;
+	if(model)
+	{
+		delete model;
+		model = NULL;
+	}
 	if(openGLView)
+	{
 		delete openGLView;
+		openGLView = NULL;
+	}
 	if(controller)
+	{
 		delete controller;
+		controller = NULL;
+	}
 	if(rssdkHandler)
-		delete rssdkHandler;	
+	{
+		delete rssdkHandler;
+		rssdkHandler = NULL;
+	}
 }
 
 

@@ -4,13 +4,17 @@ INTEL CORPORATION PROPRIETARY INFORMATION
 This software is supplied under the terms of a license agreement or nondisclosure
 agreement with Intel Corporation and may not be copied or disclosed except in
 accordance with the terms of that agreement
-Copyright(c) 2011-2015 Intel Corporation. All Rights Reserved.
+Copyright(c) 2011-2016 Intel Corporation. All Rights Reserved.
  
 *******************************************************************************/
 #ifndef OPENGLVIEW_H
 #define	OPENGLVIEW_H
 
 #pragma once
+
+#include "pxchandmodule.h"
+#include "pxchanddata.h"
+#include "pxchandconfiguration.h"
 
 #include <iostream>
 #include <mutex>
@@ -33,7 +37,7 @@ namespace ModelViewController
 		OpenGLView(bool isFullHand = false, const char path[]=NULL);
 		~OpenGLView();
 		virtual void renderScene();
-		virtual void display3DSkeleton(Tree<PXCHandData::JointData>* skeletonTree,bool hasLeftHand, bool hasRightHand);
+		virtual void display3DSkeleton(Tree<PointData>* skeletonTree,bool hasLeftHand, bool hasRightHand);
 		virtual void display3DSpace();
 		virtual void display2DImage(pxcBYTE* image,pxcI32 width,pxcI32 height);
 		virtual void displayFps(pxcI32 fps);
@@ -42,9 +46,7 @@ namespace ModelViewController
 		virtual bool stop();
 		virtual void switchTrackingMode();
 		virtual void init();
-		bool is3DModel(void) {
-			return m_f3dmodel;
-		};
+		
 
 	private:
 		static void RenderSceneCB();
@@ -56,8 +58,8 @@ namespace ModelViewController
 		static void drawPause();
 
 		static void drawCursorPoints(int index);
-		static void recursiveDrawJoints(Node<PXCHandData::JointData> node, PXCPoint3DF32 pGlobal);
-		static void recursiveDrawBones(Node<PXCHandData::JointData> node, PXCPoint3DF32 pGlobal);
+		static void recursiveDrawJoints(Node<PointData> node, PXCPoint3DF32 pGlobal);
+		static void recursiveDrawBones(Node<PointData> node, PXCPoint3DF32 pGlobal);
 
 		static void renderBitmapString(float x, float y, void *font,const char *string);
 		static void printInstructions();
@@ -69,7 +71,7 @@ namespace ModelViewController
 
 		static void close();
 
-		static PXCHandData::JointData m_skeletonsData[2][22];
+		static PointData m_skeletonsData[2][22];
 
 		static pxcBYTE* m_image;
 		static Texture* DepthTex;
@@ -80,7 +82,7 @@ namespace ModelViewController
 		static bool m_pause;
 		static bool m_switchTrackingMode;
 
-		static Tree<PXCHandData::JointData>* m_skeletonTree;
+		static Tree<PointData>* m_skeletonTree;
 
 		static std::vector<PXCPoint3DF32> m_cursorPoints[2];
 
@@ -98,8 +100,7 @@ namespace ModelViewController
 		int m_winWidth;
 		int m_winHeight;
 		char *m_modelPath;
-		bool m_f3dmodel;
-	};
+		};
 }
 
 #endif	/* OPENGLVIEW_H */

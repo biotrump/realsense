@@ -1,10 +1,12 @@
 #include "OpenGLView.h"
 # include <mmsystem.h>
+#include "common.h"
 using namespace ModelViewController;
 
 int fmodKeyboardCB(unsigned char Key, int x, int y);
 int FMOD_ShutDown(void);
 int FMOD_Init(void);
+int FMOD_Play(int keynote);
 
 /******************************************************************************/
 /*                                Defines                                     */
@@ -362,6 +364,9 @@ void OpenGLView::RenderSceneCB()
 	float x = 0.f;
 	float y = 0.f;
 	float z = 0.f;
+	static float oldx[2] = { -100.0f, -100.0f };
+	static float oldy[2] = { -100.0f, -100.0f };
+	static float oldz[2] = { -100.0f, -100.0f };
 
 	if(m_isFullHand)
 	{
@@ -407,38 +412,65 @@ void OpenGLView::RenderSceneCB()
 		{
 			glTranslatef(x, y, z);
 		}
+		//////////////////////////////////////
+		//left and right hand
+		///////////////////////////////////////
+		if(m_hasRightHand || m_hasLeftHand)
+			printf("(R,L)=(%d,%d):(x,y,z)=(%f,%f,%f)\n", m_hasRightHand, m_hasLeftHand, x, y, z);
 
 		if(m_hasRightHand) 
 			draw3DSkeleton(0, m_hasRightHand && m_hasLeftHand);
 		else
 			m_cursorPoints[0].clear();
+
 		if(m_hasLeftHand)
 			draw3DSkeleton(1, m_hasRightHand && m_hasLeftHand);
 		else
 			m_cursorPoints[1].clear();
 	}
 	glPopMatrix();
-
+	if (m_hasRightHand){
+		float temp = distance(x, y, z, oldx[0], oldy[0], oldz[0]);
+		printf("R delta=%f\n", temp);
+		if (temp > 0.1f) {
+			//translation distance
+			FMOD_Play(KeyNote_C);
+			oldx[0] = x;
+			oldy[0] = y;
+			oldz[0] = z;
+		}
+	}
+	if (m_hasLeftHand) {
+		float temp = distance(x, y, z, oldx[1], oldy[1], oldz[1]);
+		printf("L delta=%f\n", temp);
+		if (temp > 0.1f) {
+			//translation distance
+			FMOD_Play(KeyNote_C);
+			oldx[1] = x;
+			oldy[1] = y;
+			oldz[1] = z;
+		}
+	}
 	// Draw Axis
 	glPushMatrix();
 	{
 		glDisable(GL_LIGHTING);
 		glTranslatef(0.6f, -0.4f, 0);
 		glMultMatrixf(mat4x4);
-		glLineWidth(1.3f);
+		glLineWidth(2.3f);
 		glBegin(GL_LINES);
 		{
-			glColor3f(1.0f,0.0f,0.0f);
+			glColor3f(1.0f,0.0f,0.0f);//x-axis
 			glVertex3f(0,0,0);
-			glVertex3f(0.3f,0,0);
+			glVertex3f(0.5f,0,0);
 
 			glColor3f(0.0f,0.0f,1.0f);
 			glVertex3f(0,0,0);
-			glVertex3f(0,0.3f,0);
+			glVertex3f(0,0.5f,0);//y-axis
 
 			glColor3f(0.0f,1.0f,0.0f);
 			glVertex3f(0,0,0);
-			glVertex3f(0,0,0.3f);
+			glVertex3f(0,0,0.5f);//z-axis
 		}
 		glEnd();
 		
@@ -786,9 +818,11 @@ void OpenGLView::recursiveDrawJoints(Node<PointData> node,PXCPoint3DF32 pGlobal)
 }
 
 //===========================================================================//
-
+//index 0 : right hand
+//index 1 : left hand
 void OpenGLView::drawJoints(int index, bool applyTransformFlag)
 {
+	static PXCPoint3DF32 OldpGlobal = { 0.0f,0.0f,0.0f };
 	PXCPoint3DF32 pGlobal;
 	if ( false == applyTransformFlag )
 	{
@@ -800,10 +834,11 @@ void OpenGLView::drawJoints(int index, bool applyTransformFlag)
 		pGlobal.y = 0.0f;
 		pGlobal.z = 0.0f;
 	}
-
+	printf("%d:(x,y,z)=(%f,%f,%f)\n", index, pGlobal.x, pGlobal.y, pGlobal.z);
 	if(m_isFullHand)
 	{
 		recursiveDrawJoints(m_skeletonTree[index].getRoot(),pGlobal);
+		
 	}
 	else
 	{
@@ -816,6 +851,8 @@ void OpenGLView::drawJoints(int index, bool applyTransformFlag)
 		}
 		drawCursorPoints(index);
 	}
+	//pGlobal - OldpGlobal : translation vection
+	OldpGlobal = pGlobal;
 }
 
 //===========================================================================//
@@ -854,7 +891,7 @@ void OpenGLView::drawCursorPoints(int index)
 
 
 //===========================================================================//
-
+//draw left hand and right hand
 void OpenGLView::draw3DSkeleton(int index, bool applyTransformFlag)
 {
 	if(index == 0)

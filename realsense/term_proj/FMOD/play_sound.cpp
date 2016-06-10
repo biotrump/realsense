@@ -40,9 +40,9 @@ int play_sound()
     FMOD::Sound      *sound1, *sound2, *sound3;
     FMOD_RESULT       result;
     unsigned int      version;
-    
-	fmod_sounds = new FMOD::Sound *[notes_count];
+
 	notes_count = sizeof(notes) / sizeof(char *);
+	fmod_sounds = new FMOD::Sound *[notes_count];
 
     Common_Init(&extradriverdata);
 
@@ -208,8 +208,8 @@ int FMOD_Init(void)
 	FMOD_RESULT       result;
 	unsigned int      version;
 
+	notes_count = sizeof(notes) / sizeof(char *);
 	fmod_sounds = new FMOD::Sound *[notes_count];
-	notes_count = 8;//sizeof(notes) / sizeof(char *);
 
 	Common_Init(&extradriverdata);
 
@@ -234,8 +234,9 @@ int FMOD_Init(void)
 		result = fmod_system->createSound(Common_MediaPath(notes[i]), FMOD_DEFAULT, 0, fmod_sounds + i);
 		ERRCHECK(result);
 		if (result != FMOD_OK)
-			return result;
+			break;
 	}
+	return result;
 }
 
 int FMOD_ShutDown(void)
@@ -266,6 +267,8 @@ int FMOD_ShutDown(void)
 
 int FMOD_Play(int keynote)
 {
+	if (keynote < KeyNote_C)
+		keynote = KeyNote_C;
 	FMOD_RESULT result = fmod_system->playSound(fmod_sounds[keynote], 0, false, &channel);
 	ERRCHECK(result);
 	return result;

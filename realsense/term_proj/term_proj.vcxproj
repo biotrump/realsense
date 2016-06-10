@@ -228,9 +228,11 @@
     <ClInclude Include="FMOD\common_platform.h" />
     <ClInclude Include="include\camera.h" />
     <ClInclude Include="include\config.h" />
+    <ClInclude Include="include\CursorModel.h" />
     <ClInclude Include="include\Defs.h" />
     <ClInclude Include="include\HandsController.h" />
     <ClInclude Include="include\HandsModel.h" />
+    <ClInclude Include="include\IModel.h" />
     <ClInclude Include="include\IView.h" />
     <ClInclude Include="include\oglModel.h" />
     <ClInclude Include="include\OpenGLView.h" />

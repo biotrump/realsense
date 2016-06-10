@@ -8,8 +8,11 @@ using namespace ModelViewController;
 #define MAX_NUMBER_OF_JOINTS 1
 
 //===========================================================================//
-
-CursorModel::CursorModel() : m_rightHandExist(false),m_leftHandExist(false),m_depthmap(0),m_imageWidth(640),m_imageHeight(480)
+//the hand position of farest and nearest
+//m_farZPos : farest z pos, right handed coordination, z toward human face
+//m_nearZPos :nearest z pos, right handed coordination, z toward human face
+CursorModel::CursorModel() : m_rightHandExist(false),m_leftHandExist(false),m_depthmap(0),m_imageWidth(640),m_imageHeight(480),
+m_farZPos{ { 0,0,1000000.0f },{ 0,0,1000000.0f } }, m_nearZPos{ { 0,0,-1000000.0f },{ 0,0,-1000000.0f } }
 {
 	m_skeletonTree = new Tree<PointData>[MAX_NUMBER_OF_HANDS];
 	m_fullHandMode = false;
@@ -254,16 +257,28 @@ void CursorModel::updateskeletonTree()
 			{
 				m_rightHandExist = true;
 				side = 0;
+				printf("RH 0:");
 			}
 			else if (cursor->QueryBodySide() == PXCHandData::BodySideType::BODY_SIDE_LEFT)
 			{
 				m_leftHandExist = true;
 				side = 1;
+				printf("LH 1:");
 			}
 			PointData cursorData = {};
 			PXCPoint3DF32 point = cursor->QueryCursorWorldPoint();
 			cursorData.positionWorld = point;
+			printf("%s:pos %f,%f,%f",__func__,point.x, point.y, point.z);
 			m_skeletonTree[side].setRoot(cursorData);
+
+			if (point.z < m_farZPos[side].z) {
+				m_farZPos[side]=point;//farest z pos, right handed coordination, z toward human face
+				printf("%d:Far(%f,%f,%f)\n", side, point.x, point.y,point.z);
+			}
+			if (point.z > m_nearZPos[side].z) {
+				m_nearZPos[side]=point;//nearest z pos, right handed coordination, z toward human face
+				printf("%d:near(%f,%f,%f)\n", side, point.x, point.y, point.z);
+			}
 		}		
 	}	
 }

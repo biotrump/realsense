@@ -61,6 +61,9 @@ namespace ModelViewController
 		bool m_isPaused;
 		bool m_gestureFired;
 		PXCSenseManager* m_senseManager;
+
+		PXCPoint3DF32 m_farZPos[2];//farest z pos, right handed coordination, z toward human face
+		PXCPoint3DF32 m_nearZPos[2];//nearest z pos, right handed coordination, z toward human face
 	};
 
 }

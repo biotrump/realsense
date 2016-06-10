@@ -64,6 +64,9 @@ namespace ModelViewController
 		bool m_gestureFired;
 		PXCSenseManager* m_senseManager;
 		void copyJointToPoint(PointData & dst,const PXCHandData::JointData & src);
+
+		PXCPoint3DF32 m_farZPos[2];//farest z pos, right handed coordination, z toward human face
+		PXCPoint3DF32 m_nearZPos[2];//nearest z pos, right handed coordination, z toward human face
 	};
 
 }

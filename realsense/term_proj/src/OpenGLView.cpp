@@ -432,9 +432,13 @@ void OpenGLView::RenderSceneCB()
 	if (m_hasRightHand){
 		float temp = distance(x, y, z, oldx[0], oldy[0], oldz[0]);
 		printf("R delta=%f\n", temp);
-		if (temp > 0.1f) {
+		if (temp >= 0.05f) {
 			//translation distance
-			FMOD_Play(KeyNote_C);
+			//nearest pos: PXCPoint3DF32 m_nearZPos{ x = -0.0735254809 y = 0.0459796526 z = 0.745454848 }
+			//farest pos :PXCPoint3DF32 m_farZPos[1]{ x = 0.0469412357 y = 0.00414880225 z = 0.111791573 }	
+			int depth = (z - 0.1) / 0.1;
+
+			FMOD_Play(KeyNote_C+depth);
 			oldx[0] = x;
 			oldy[0] = y;
 			oldz[0] = z;

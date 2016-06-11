@@ -104,7 +104,7 @@ bool start(bool isFullHand, char *assimp_mpath)
 
 int main(int argc, char** argv)
 {
-	bool isFullHand = true;
+	bool isFullHand = false;
 	if(argc == 2)
 	{
 		if (strcmp(argv[1],"-full")==0)

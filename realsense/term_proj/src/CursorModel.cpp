@@ -2,7 +2,7 @@
 #include "pxchandcursormodule.h"
 #include "pxccursorconfiguration.h"
 #include "pxchanddata.h"
-
+#include "play_sound.h"
 using namespace ModelViewController;
 
 #define MAX_NUMBER_OF_JOINTS 1
@@ -279,6 +279,24 @@ void CursorModel::updateskeletonTree()
 				m_nearZPos[side]=point;//nearest z pos, right handed coordination, z toward human face
 				printf("%d:Cnear(%f,%f,%f)\n", side, point.x, point.y, point.z);
 			}
+			//////////////////////////////////////////////
+			//FMOD play by distance and gesture
+			////////////////////////////////////////////
+			float temp = distance(point.x, point.y, point.z,
+				m_lastPos[side].x, m_lastPos[side].y, m_lastPos[side].z);
+			printf("CL delta=(%f,%f,%f): %f\n", point.x, point.y, point.z, temp);
+			if (temp >= 0.1f) {
+				//translation distance
+				m_lastPos[side].x = point.x;
+				m_lastPos[side].y = point.y;
+				m_lastPos[side].z = point.z;
+
+				point.z = (point.z < 0.2f) ? 0. : point.z - 0.2f;
+				int depth = ceilf(point.z / 0.05);
+				printf("\nL depth:%d\n", depth);
+				FMOD_Play(KeyNote_C + depth);
+			}
+
 		}		
 	}	
 }

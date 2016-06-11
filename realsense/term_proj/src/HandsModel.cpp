@@ -302,7 +302,9 @@ void HandsModel::updateskeletonTree()
 
 			m_skeletonTree[side].setRoot(rootDataNode);
 
+			//////////////////////////////////////////////
 			//FMOD play by distance and gesture
+			////////////////////////////////////////////
 			float temp = distance(point.x, point.y, point.z, 
 				m_lastPos[side].x, m_lastPos[side].y, m_lastPos[side].z);
 			printf("CL delta=(%f,%f,%f): %f\n", point.x, point.y, point.z, temp);

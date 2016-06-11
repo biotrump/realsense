@@ -456,10 +456,10 @@ void OpenGLView::RenderSceneCB()
 			glColor3f(0.0f,0.0f,1.0f);
 			glBegin(GL_LINES);
 			{
-				glVertex3f(i*factor,-2*factor,-10*factor);
-				glVertex3f(i*factor,-2*factor,10*factor);					
-				glVertex3f(-10*factor,-2*factor,i*factor);
-				glVertex3f(10*factor,-2*factor,i*factor);
+				glVertex3f(i*factor,-2*factor+0.5,-10*factor);
+				glVertex3f(i*factor,-2*factor+0.5,10*factor);					
+				glVertex3f(-10*factor,-2*factor+0.5,i*factor);
+				glVertex3f(10*factor,-2*factor+0.5,i*factor);
 			}
 			glEnd();
 		}
@@ -470,6 +470,9 @@ void OpenGLView::RenderSceneCB()
 		glEnable(GL_LIGHTING);
 	}
 	glPopMatrix();
+
+	//guiding points to play notes
+	drawGuidePoints();
 
 	// Draw 2D Image
 	if(m_image)
@@ -882,6 +885,38 @@ void OpenGLView::drawCursorPoints(int index)
 	}
 }
 
+void OpenGLView::drawGuidePoints(void)
+{
+	PXCPoint3DF32 pGlobal = { 0.f,0.f,0.f };
+
+	for (int j = 0; j < 10; ++j)
+	{
+		PXCPoint3DF32 p0 = { 0.1, -0.02, 0.1 };
+		p0.z = p0.z + 0.07*j;
+
+		glPushMatrix();
+		{
+			PXCPoint3DF32 v0 = transform(pGlobal);
+			glTranslatef(-v0.x, -v0.y, -v0.z);
+
+			PXCPoint3DF32 v1 = transform(p0);
+			glTranslatef(v1.x, v1.y, v1.z);
+
+			glutSolidSphere(0.008, 50, 50);
+
+			//if (index == 0)
+			{
+				//Here
+				glColor3f(1.0, j * m_cursorColorFactor, 0.0);
+			}
+			//else
+			{
+				//glColor3f(0.0, j * m_cursorColorFactor, 1.0);
+			}
+		}
+		glPopMatrix();
+	}
+}
 
 //===========================================================================//
 //draw left hand and right hand

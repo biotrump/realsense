@@ -59,6 +59,7 @@ namespace ModelViewController
 		static void OpenGLView::drawPos(int index, const PXCPoint3DF32 point);
 
 		static void drawCursorPoints(int index);
+		static void drawGuidePoints(void);
 		static void recursiveDrawJoints(Node<PointData> node, PXCPoint3DF32 pGlobal);
 		static void recursiveDrawBones(Node<PointData> node, PXCPoint3DF32 pGlobal);
 

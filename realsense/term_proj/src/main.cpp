@@ -105,18 +105,32 @@ bool start(bool isFullHand, char *assimp_mpath)
 int main(int argc, char** argv)
 {
 	bool isFullHand = false;
-	if(argc == 2)
-	{
-		if (strcmp(argv[1],"-full")==0)
+	char *modelFile = NULL;
+	////////////////////////////////////////////////
+	int i=1;
+
+	while (i < argc) {
+		printf("%d: %s\n", i, argv[i]);
+
+		// Free memory allocated for CommandLineToArgvW arguments.
+		if (strcmp(argv[i], "-fullhand") == 0)
 		{
 			isFullHand = true;
 		}
+		else if (strcmp(argv[i], "-m") == 0) {
+			if (i < argc) {
+				i++;
+				modelFile = argv[i];
+			}
+		}
+		i++;
 	}
+	//////////////////////////////////////////////////////////
 
 	// Full hand mode
 	if(isFullHand)
 	{
-		if(!start(isFullHand, argv[1]))
+		if(!start(isFullHand, modelFile))
 		{
 			std::printf("Failed at Initialization\n");
 			releaseAll();
@@ -125,10 +139,10 @@ int main(int argc, char** argv)
 	// Cursor hand
 	else
 	{
-		if(!start(isFullHand, argv[1]))
+		if(!start(isFullHand, modelFile))
 		{
 			releaseAll();
-			if(!start(!isFullHand, argv[1]))
+			if(!start(!isFullHand, modelFile))
 			{
 				std::printf("Failed at Initialization\n");
 				releaseAll();

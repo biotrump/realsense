@@ -463,6 +463,34 @@ int oglModelLoad(char path[])
 	return 0;
 }
 
+int modelZooming(int zoomIn, float step)
+{
+	int ret = 0;
+	if (zoomIn) {
+		model_scale += step;
+		/* scale the whole asset to fit into our view frustum */
+		float tmp = scene_max.x - scene_min.x;
+		tmp = aisgl_max(scene_max.y - scene_min.y, tmp);
+		tmp = aisgl_max(scene_max.z - scene_min.z, tmp);
+		tmp = model_scale / tmp;
+		glScalef(tmp, tmp, tmp);
+		ret = 1;
+	}
+	else {
+		model_scale -= step;
+		if (model_scale < 0.2f)
+			model_scale = 0.2f;
+		/* scale the whole asset to fit into our view frustum */
+		float tmp = scene_max.x - scene_min.x;
+		tmp = aisgl_max(scene_max.y - scene_min.y, tmp);
+		tmp = aisgl_max(scene_max.z - scene_min.z, tmp);
+		tmp = model_scale / tmp;
+		glScalef(tmp, tmp, tmp);
+		ret = 1;
+	}
+	return ret;
+}
+
 int modelKeyboardCB(unsigned char Key, int x, int y)
 {
 	int ret = 0;
@@ -481,41 +509,20 @@ int modelKeyboardCB(unsigned char Key, int x, int y)
 		printf("%c, angle=%f\n", Key, angle);
 		ret = 1;
 		break;
-	case 'z': {
-		model_scale += 0.1;
-		/* scale the whole asset to fit into our view frustum */
-		float tmp = scene_max.x - scene_min.x;
-		tmp = aisgl_max(scene_max.y - scene_min.y, tmp);
-		tmp = aisgl_max(scene_max.z - scene_min.z, tmp);
-		tmp = model_scale / tmp;
-		glScalef(tmp, tmp, tmp);
-		printf("%c\n", Key);
-		ret = 1;
-	}
-			  break;
+	case 'z': 
+		modelZooming(1,0.1f);//zoom in
+		break;
 	case 'd':
 		angle++;
 		printf("%c, angle=%f\n", Key, angle);
 		ret = 1;
 		break;
-	case 'x': {
-		model_scale -= 0.1;
-		if (model_scale < 0.2f)
-			model_scale = 0.2f;
-		/* scale the whole asset to fit into our view frustum */
-		float tmp = scene_max.x - scene_min.x;
-		tmp = aisgl_max(scene_max.y - scene_min.y, tmp);
-		tmp = aisgl_max(scene_max.z - scene_min.z, tmp);
-		tmp = model_scale / tmp;
-		glScalef(tmp, tmp, tmp);
-		printf("%c\n", Key);
-		ret = 1;
-	}
-			  break;
+	case 'x': 
+		modelZooming(0,0.1f);//zoom out
+		break;
 	default:
 		printf("%c\n", Key);
 		break;
 	}
 	return ret;
 }
-

@@ -267,6 +267,7 @@ void HandsModel::updateskeletonTree()
 
 			Node<PointData> rootDataNode(pointData);
 			PXCPoint3DF32 point = pointData.positionWorld;
+			m_curPos[side] = point;
 			printf("%s:pos %f,%f,%f", __func__, point.x, point.y, point.z);
 			
 			if (point.z < m_farZPos[side].z) {
@@ -308,13 +309,15 @@ void HandsModel::updateskeletonTree()
 			float temp = distance(point.x, point.y, point.z, 
 				m_lastPos[side].x, m_lastPos[side].y, m_lastPos[side].z);
 			printf("CL delta=(%f,%f,%f): %f\n", point.x, point.y, point.z, temp);
-			if (temp >= 0.1f) {
+			if (temp >= 0.05f) {
 				//translation distance
 				m_lastPos[side].x = point.x;
 				m_lastPos[side].y = point.y;
 				m_lastPos[side].z = point.z;
-
-				point.z = (point.z < 0.2f) ? 0. : point.z - 0.2f;
+				//min z:0.22, max z:0.7, 0.7-0.2=0.5, 0.5/10=0.05
+				//0.2-0.25 :C
+				//0.25-0.3 :D
+				point.z = (point.z < 0.25f) ? 0. : point.z - 0.25f;
 				int depth = ceilf(point.z / 0.05);
 				printf("\nL depth:%d\n", depth);
 				FMOD_Play(KeyNote_C + depth);

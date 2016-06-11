@@ -362,11 +362,7 @@ void OpenGLView::RenderSceneCB()
 	float x = 0.f;
 	float y = 0.f;
 	float z = 0.f;
-	/*
-	static float oldx[2] = { -100.0f, -100.0f };
-	static float oldy[2] = { -100.0f, -100.0f };
-	static float oldz[2] = { -100.0f, -100.0f };
-	*/
+
 	if(m_isFullHand)
 	{
 		if(m_hasLeftHand && m_hasRightHand)
@@ -428,43 +424,6 @@ void OpenGLView::RenderSceneCB()
 			m_cursorPoints[1].clear();
 	}
 	glPopMatrix();
-	if (m_hasRightHand){
-#if 0
-		float temp = distance(x, y, z, oldx[0], oldy[0], oldz[0]);
-		printf("CR delta=(%f,%f,%f): %f\n", x,y,z, temp);
-		if (temp >= 0.1f) {
-			//translation distance
-			//nearest pos: PXCPoint3DF32 m_nearZPos{ x = -0.0735254809 y = 0.0459796526 z = 0.745454848 }
-			//farest pos :PXCPoint3DF32 m_farZPos[1]{ x = 0.0469412357 y = 0.00414880225 z = 0.111791573 }	
-			oldx[0] = x;
-			oldy[0] = y;
-			oldz[0] = z;
-			
-			z = (z < 0.2f)? 0.: z - 0.2f;
-			int depth = ceilf(z / 0.05);
-			printf("\nL depth:%d\n", depth);
-			FMOD_Play(KeyNote_C + depth);
-
-		}
-#endif
-	}
-	if (m_hasLeftHand) {
-#if 0
-		float temp = distance(x, y, z, oldx[1], oldy[1], oldz[1]);
-		printf("CL delta=(%f,%f,%f): %f\n", x, y, z, temp);
-		if (temp >= 0.1f) {
-			//translation distance
-			oldx[1] = x;
-			oldy[1] = y;
-			oldz[1] = z;
-
-			z = (z < 0.2f) ? 0. : z - 0.2f;
-			int depth = ceilf(z / 0.05);
-			printf("\nL depth:%d\n",depth);
-			FMOD_Play(KeyNote_C + depth);
-		}
-#endif
-	}
 
 	// Draw Axis
 	glPushMatrix();
@@ -618,6 +577,23 @@ void OpenGLView::drawFps()
 	glEnable(GL_LIGHTING);
 }
 
+//===========================================================================//
+void OpenGLView::drawPos(int index, const PXCPoint3DF32 point)
+{
+	glDisable(GL_LIGHTING);
+	std::string line = "";
+	char spos[100];
+	sprintf(spos,"%c:%.3f,%.3f,%.3f", index?'R':'L', point.x, point.y, point.z);
+	if (index) {
+		//glColor3f(1.f, 0.f, 0.f);
+		renderBitmapString(0.1f, 0.5f, GLUT_BITMAP_TIMES_ROMAN_24, spos);
+	}
+	else {
+		//glColor3f(.0f, 0.f, 1.0f);
+		renderBitmapString(0.1f, 0.55f, GLUT_BITMAP_TIMES_ROMAN_24, spos);
+	}
+	glEnable(GL_LIGHTING);
+}
 
 //===========================================================================//
 
@@ -838,10 +814,11 @@ void OpenGLView::recursiveDrawJoints(Node<PointData> node,PXCPoint3DF32 pGlobal)
 void OpenGLView::drawJoints(int index, bool applyTransformFlag)
 {
 	//static PXCPoint3DF32 OldpGlobal = { 0.0f,0.0f,0.0f };
-	PXCPoint3DF32 pGlobal;
+	PXCPoint3DF32 pGlobal, pos;
+	pos=vec(m_skeletonTree[index].getRoot().getNodeValue().positionWorld);
 	if ( false == applyTransformFlag )
 	{
-		pGlobal = vec(m_skeletonTree[index].getRoot().getNodeValue().positionWorld);
+		pGlobal = pos;//vec(m_skeletonTree[index].getRoot().getNodeValue().positionWorld);
 	}
 	else
 	{
@@ -849,7 +826,10 @@ void OpenGLView::drawJoints(int index, bool applyTransformFlag)
 		pGlobal.y = 0.0f;
 		pGlobal.z = 0.0f;
 	}
-	printf("%d:(x,y,z)=(%f,%f,%f)\n", index, pGlobal.x, pGlobal.y, pGlobal.z);
+	//renderstring
+	printf("%d:(x,y,z)=(%f,%f,%f)\n", index, pos.x, pos.y, pos.z);
+	drawPos(index, pos);
+
 	if(m_isFullHand)
 	{
 		recursiveDrawJoints(m_skeletonTree[index].getRoot(),pGlobal);
@@ -866,8 +846,6 @@ void OpenGLView::drawJoints(int index, bool applyTransformFlag)
 		}
 		drawCursorPoints(index);
 	}
-	//pGlobal - OldpGlobal : translation vection
-	//OldpGlobal = pGlobal;
 }
 
 //===========================================================================//

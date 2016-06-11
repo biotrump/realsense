@@ -8,6 +8,7 @@ extern  "C" {
 
 	int oglModelLoad(char path[]);
 	void modelDisplay(void);
+	int modelZooming(int zoomIn, float step);
 	int modelKeyboardCB(unsigned char Key, int x, int y);
 
 #define HARP_ROT_Y	(319)		//1760

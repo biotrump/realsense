@@ -56,6 +56,7 @@ namespace ModelViewController
 		static void drawJoints(int index, bool applyTransformFlag);
 		static void drawFps();
 		static void drawPause();
+		static void OpenGLView::drawPos(int index, const PXCPoint3DF32 point);
 
 		static void drawCursorPoints(int index);
 		static void recursiveDrawJoints(Node<PointData> node, PXCPoint3DF32 pGlobal);

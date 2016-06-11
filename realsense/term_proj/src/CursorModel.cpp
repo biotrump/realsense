@@ -3,6 +3,7 @@
 #include "pxccursorconfiguration.h"
 #include "pxchanddata.h"
 #include "play_sound.h"
+#include "oglModel.h"
 using namespace ModelViewController;
 
 #define MAX_NUMBER_OF_JOINTS 1
@@ -98,6 +99,8 @@ void CursorModel::pause(bool isPause,bool isModel)
 	m_senseManager->QueryCaptureManager()->SetPause(isPause);
 	if(!isModel)
 	{
+		//If true, the pipeline will stop delivering samples to the module; 
+		//if false, the pipeline resumes delivering samples to the module.
 		m_senseManager->PauseHandCursor(isPause);
 
 		if(isPause)
@@ -218,10 +221,131 @@ bool CursorModel::isModelPaused()
 }
 
 //===========================================================================//
-
+//capture gesture
 void CursorModel::updateGestureData()
 {
 	PXCCursorData::GestureData gestureData;
+
+	m_rightHandExist = false;
+	m_leftHandExist = false;
+
+	// Iterate over cursors
+	int numOfCursors = m_cursorData->QueryNumberOfCursors();
+	for (int index = 0; index < numOfCursors; ++index)
+	{
+		PXCCursorData::ICursor* cursor;
+		if (m_cursorData->QueryCursorData(PXCCursorData::ACCESS_ORDER_BY_TIME, index, cursor) == PXC_STATUS_NO_ERROR)
+		{
+			// Get hand body side (left, right, unknown)
+			int side = 0;
+			if (cursor->QueryBodySide() == PXCHandData::BodySideType::BODY_SIDE_RIGHT)
+			{
+				m_rightHandExist = true;
+				side = 0;
+				printf("RH 0:");
+			}
+			else if (cursor->QueryBodySide() == PXCHandData::BodySideType::BODY_SIDE_LEFT)
+			{
+				m_leftHandExist = true;
+				side = 1;
+				printf("LH 1:");
+			}
+			PointData cursorData = {};
+			PXCPoint3DF32 point = cursor->QueryCursorWorldPoint();
+			cursorData.positionWorld = point;
+			m_curPos[side] = point;
+			printf("%s:Cpos %f,%f,%f", __func__, point.x, point.y, point.z);
+			m_skeletonTree[side].setRoot(cursorData);
+
+			if (point.z < m_farZPos[side].z) {
+				m_farZPos[side] = point;//farest z pos, right handed coordination, z toward human face
+				printf("%d:CFar(%f,%f,%f)\n", side, point.x, point.y, point.z);
+			}
+			if (point.z > m_nearZPos[side].z) {
+				m_nearZPos[side] = point;//nearest z pos, right handed coordination, z toward human face
+				printf("%d:Cnear(%f,%f,%f)\n", side, point.x, point.y, point.z);
+			}
+			//////////////////////////////////////////////
+			//FMOD play by distance and gesture
+			////////////////////////////////////////////
+			//IsGestureFiredByHand
+			//if (m_cursorData->IsGestureFired(PXCCursorData::CURSOR_CLICK, gestureData))
+			pxcI32 firedGestures=m_cursorData->QueryFiredGesturesNumber();
+			for (int i = 0;i < firedGestures;i++) {
+				pxcStatus sts = m_cursorData->QueryFiredGestureData(i, gestureData);
+				if (PXC_STATUS_NO_ERROR == sts)	{
+					//gestureData.handId
+					switch (gestureData.label) {
+					case PXCCursorData::CURSOR_CLICK:
+					{
+						m_gestureFired = !m_gestureFired;
+#if 0
+						//pause(m_gestureFired,true);
+
+						float temp = distance(point.x, point.y, point.z,
+							m_lastPos[side].x, m_lastPos[side].y, m_lastPos[side].z);
+						printf("CL delta=(%f,%f,%f): %f\n", point.x, point.y, point.z, temp);
+						//if (temp >= 0.05f) 
+						//if (abs(m_lastPos[side].z - point.z) >= 0.049f) 
+						{
+							//translation distance
+							m_lastPos[side].x = point.x;
+							m_lastPos[side].y = point.y;
+							m_lastPos[side].z = point.z;
+							//min z:0.22, max z:0.7, 0.7-0.2=0.5, 0.5/10=0.05
+							//0.2-0.25 :C
+							//0.25-0.3 :D
+							point.z = (point.z < 0.25f) ? 0. : point.z - 0.25f;
+							int depth = ceilf(point.z / 0.05);
+							printf("\nL depth:%d\n", depth);
+							FMOD_Play(KeyNote_C + depth);
+						}
+#endif
+					}
+					break;
+					case PXCCursorData::CURSOR_CLOCKWISE_CIRCLE:
+						modelZooming(1,0.8f);//zoom in model
+						break;
+					case PXCCursorData::CURSOR_COUNTER_CLOCKWISE_CIRCLE:
+						modelZooming(0,0.8f);//zoom out model
+						break;
+					case PXCCursorData::CURSOR_HAND_CLOSING:
+					{
+						m_gestureFired = !m_gestureFired;
+
+						//pause(m_gestureFired,true);
+
+						float temp = distance(point.x, point.y, point.z,
+							m_lastPos[side].x, m_lastPos[side].y, m_lastPos[side].z);
+						printf("CL delta=(%f,%f,%f): %f\n", point.x, point.y, point.z, temp);
+						//if (temp >= 0.05f) 
+						//if (abs(m_lastPos[side].z - point.z) >= 0.049f) 
+						{
+							//translation distance
+							m_lastPos[side].x = point.x;
+							m_lastPos[side].y = point.y;
+							m_lastPos[side].z = point.z;
+							//min z:0.22, max z:0.7, 0.7-0.2=0.5, 0.5/10=0.05
+							//0.2-0.25 :C
+							//0.25-0.3 :D
+							point.z = (point.z < 0.25f) ? 0. : point.z - 0.25f;
+							int depth = ceilf(point.z / 0.05);
+							printf("\nL depth:%d\n", depth);
+							FMOD_Play(KeyNote_C + depth);
+						}
+
+					}
+						break;
+					case PXCCursorData::CURSOR_HAND_OPENING:
+						break;
+					default:
+						break;
+					}
+				}
+			}
+		}
+	}
+	/*
 	int numOfCursors = m_cursorData->QueryNumberOfCursors();
 	if(numOfCursors == 2)
 	{
@@ -231,10 +355,11 @@ void CursorModel::updateGestureData()
 			{
 				m_gestureFired = !m_gestureFired;
 
-				pause(m_gestureFired,true);
+				//pause(m_gestureFired,true);
 			}
 		}
 	}
+	*/
 }
 
 //===========================================================================//
@@ -268,6 +393,7 @@ void CursorModel::updateskeletonTree()
 			PointData cursorData = {};
 			PXCPoint3DF32 point = cursor->QueryCursorWorldPoint();
 			cursorData.positionWorld = point;
+			m_curPos[side] = point;
 			printf("%s:Cpos %f,%f,%f",__func__,point.x, point.y, point.z);
 			m_skeletonTree[side].setRoot(cursorData);
 
@@ -279,24 +405,28 @@ void CursorModel::updateskeletonTree()
 				m_nearZPos[side]=point;//nearest z pos, right handed coordination, z toward human face
 				printf("%d:Cnear(%f,%f,%f)\n", side, point.x, point.y, point.z);
 			}
+#if 0
 			//////////////////////////////////////////////
 			//FMOD play by distance and gesture
 			////////////////////////////////////////////
 			float temp = distance(point.x, point.y, point.z,
 				m_lastPos[side].x, m_lastPos[side].y, m_lastPos[side].z);
 			printf("CL delta=(%f,%f,%f): %f\n", point.x, point.y, point.z, temp);
-			if (temp >= 0.1f) {
+			//if (temp >= 0.05f) 
+			if( abs(m_lastPos[side].z - point.z) >= 0.049f ){
 				//translation distance
 				m_lastPos[side].x = point.x;
 				m_lastPos[side].y = point.y;
 				m_lastPos[side].z = point.z;
-
-				point.z = (point.z < 0.2f) ? 0. : point.z - 0.2f;
+				//min z:0.22, max z:0.7, 0.7-0.2=0.5, 0.5/10=0.05
+				//0.2-0.25 :C
+				//0.25-0.3 :D
+				point.z = (point.z < 0.25f) ? 0. : point.z - 0.25f;
 				int depth = ceilf(point.z / 0.05);
 				printf("\nL depth:%d\n", depth);
 				FMOD_Play(KeyNote_C + depth);
 			}
-
+#endif
 		}		
 	}	
 }

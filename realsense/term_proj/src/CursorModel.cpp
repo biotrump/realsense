@@ -305,6 +305,15 @@ void CursorModel::updateGestureData()
 				}
 
 			}
+			if (m_cursorData->IsGestureFiredByHand(PXCCursorData::CURSOR_CLOCKWISE_CIRCLE, 
+				cursor->QueryUniqueId(), gestureData)) {
+				modelZooming(1, 0.8f);//zoom in model
+			}
+			if (m_cursorData->IsGestureFiredByHand(PXCCursorData::CURSOR_COUNTER_CLOCKWISE_CIRCLE, 
+				cursor->QueryUniqueId(), gestureData)) {
+				modelZooming(0, 0.8f);//zoom out model
+			}
+
 #if 0
 			pxcI32 firedGestures=m_cursorData->QueryFiredGesturesNumber();
 			//for (int i = 0;i < firedGestures;i++)

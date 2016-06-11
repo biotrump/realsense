@@ -49,6 +49,7 @@ namespace ModelViewController
 		void updateSkeleton();
 		Tree<PointData>* m_skeletonTree;
 		void updateskeletonTree();
+		void updateGestureData();
 		void update2DImage();
 		PXCHandModule* m_handModule;
 		PXCHandCursorModule* m_handCursorModule;

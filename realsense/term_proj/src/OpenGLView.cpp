@@ -410,8 +410,8 @@ void OpenGLView::RenderSceneCB()
 		//////////////////////////////////////
 		//left and right hand
 		///////////////////////////////////////
-		if(m_hasRightHand || m_hasLeftHand)
-			printf("(R,L)=(%d,%d):(x,y,z)=(%f,%f,%f)\n", m_hasRightHand, m_hasLeftHand, x, y, z);
+		//if(m_hasRightHand || m_hasLeftHand)
+		//	printf("(R,L)=(%d,%d):(x,y,z)=(%f,%f,%f)\n", m_hasRightHand, m_hasLeftHand, x, y, z);
 
 		if(m_hasRightHand) 
 			draw3DSkeleton(0, m_hasRightHand && m_hasLeftHand);
@@ -827,7 +827,7 @@ void OpenGLView::drawJoints(int index, bool applyTransformFlag)
 		pGlobal.z = 0.0f;
 	}
 	//renderstring
-	printf("%d:(x,y,z)=(%f,%f,%f)\n", index, pos.x, pos.y, pos.z);
+	//printf("%d:(x,y,z)=(%f,%f,%f)\n", index, pos.x, pos.y, pos.z);
 	drawPos(index, pos);
 
 	if(m_isFullHand)

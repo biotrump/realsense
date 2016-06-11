@@ -269,10 +269,13 @@ int FMOD_Play(int keynote)
 {
 	if (keynote < KeyNote_C)
 		keynote = KeyNote_C;
+	printf("\nnotes:%d\n", keynote);
 	FMOD_RESULT result = fmod_system->playSound(fmod_sounds[keynote], 0, false, &channel);
 	ERRCHECK(result);
+	//Common_Sleep(500);
 	return result;
 }
+
 int fmodKeyboardCB(unsigned char Key, int x, int y)
 {
 	int ret = 0;

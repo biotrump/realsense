@@ -217,6 +217,9 @@ bool HandsModel::updateModel()
 	// Update skeleton tree model
 	updateskeletonTree();
 
+	// Update gesture data
+	updateGestureData();
+
 	// Update image
 	update2DImage();
 
@@ -326,6 +329,37 @@ void HandsModel::updateskeletonTree()
 	}
 }
 
+//===========================================================================//
+
+//capture gesture
+void HandsModel::updateGestureData()
+{
+	// poll for gestures
+
+	PXCHandData::GestureData data;
+
+	if (m_handData->IsGestureFired(L"tap", data)) {
+
+		// handle tap gesture
+
+	//	...
+
+	}
+
+
+
+	if (m_handData->IsGestureFired(L"wave", data)) {
+
+		// handle wave gesture
+
+		//...
+
+	}
+
+}
+
+//===========================================================================//
+
 void HandsModel::copyJointToPoint(PointData & dst,const PXCHandData::JointData & src)
 {
 	dst.confidence = src.confidence;
@@ -335,8 +369,6 @@ void HandsModel::copyJointToPoint(PointData & dst,const PXCHandData::JointData &
 	dst.positionWorld = src.positionWorld;
 	dst.speed = src.speed;
 }
-
-
 
 //===========================================================================//
 

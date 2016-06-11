@@ -233,8 +233,11 @@ void CursorModel::updateGestureData()
 	int numOfCursors = m_cursorData->QueryNumberOfCursors();
 	for (int index = 0; index < numOfCursors; ++index)
 	{
+		// retrieve the hand cursor identifier
+		//pxcUID cursorId[2];
+		//m_cursorData->QueryHandId(PXCCursorData::ACCESS_ORDER_NEAR_TO_FAR, 0, cursorId[index]);
 		PXCCursorData::ICursor* cursor;
-		if (m_cursorData->QueryCursorData(PXCCursorData::ACCESS_ORDER_BY_TIME, index, cursor) == PXC_STATUS_NO_ERROR)
+		if (m_cursorData->QueryCursorData(PXCCursorData::ACCESS_ORDER_NEAR_TO_FAR /*ACCESS_ORDER_BY_TIME*/, index, cursor) == PXC_STATUS_NO_ERROR)
 		{
 			// Get hand body side (left, right, unknown)
 			int side = 0;
@@ -242,36 +245,71 @@ void CursorModel::updateGestureData()
 			{
 				m_rightHandExist = true;
 				side = 0;
-				printf("RH 0:");
+				//printf("RH 0:");
 			}
 			else if (cursor->QueryBodySide() == PXCHandData::BodySideType::BODY_SIDE_LEFT)
 			{
 				m_leftHandExist = true;
 				side = 1;
-				printf("LH 1:");
+				//printf("LH 1:");
 			}
 			PointData cursorData = {};
 			PXCPoint3DF32 point = cursor->QueryCursorWorldPoint();
 			cursorData.positionWorld = point;
 			m_curPos[side] = point;
-			printf("%s:Cpos %f,%f,%f", __func__, point.x, point.y, point.z);
+			//printf("\np [%d]: %f,%f,%f\n",  side, point.x, point.y, point.z);
 			m_skeletonTree[side].setRoot(cursorData);
 
 			if (point.z < m_farZPos[side].z) {
 				m_farZPos[side] = point;//farest z pos, right handed coordination, z toward human face
-				printf("%d:CFar(%f,%f,%f)\n", side, point.x, point.y, point.z);
+				//printf("%d:CFar(%f,%f,%f)\n", side, point.x, point.y, point.z);
 			}
 			if (point.z > m_nearZPos[side].z) {
 				m_nearZPos[side] = point;//nearest z pos, right handed coordination, z toward human face
-				printf("%d:Cnear(%f,%f,%f)\n", side, point.x, point.y, point.z);
+				//printf("%d:Cnear(%f,%f,%f)\n", side, point.x, point.y, point.z);
 			}
 			//////////////////////////////////////////////
 			//FMOD play by distance and gesture
 			////////////////////////////////////////////
 			//IsGestureFiredByHand
 			//if (m_cursorData->IsGestureFired(PXCCursorData::CURSOR_CLICK, gestureData))
+			
+			if (m_cursorData->IsGestureFiredByHand(PXCCursorData::CURSOR_HAND_CLOSING, cursor->QueryUniqueId(),
+				gestureData))
+			{
+				printf("\np [%d]: %f,%f,%f\n", side, point.x, point.y, point.z);
+
+				//m_gestureFired = !m_gestureFired;
+
+				//pause(m_gestureFired,true);
+
+				float temp = distance(point.x, point.y, point.z,
+					m_lastPos[side].x, m_lastPos[side].y, m_lastPos[side].z);
+				//printf("CL delta=(%f,%f,%f): %f\n", point.x, point.y, point.z, temp);
+
+				//if (temp >= 0.05f) 
+				//if (abs(m_lastPos[side].z - point.z) >= 0.049f) 
+				{
+					//translation distance
+					m_lastPos[side].x = point.x;
+					m_lastPos[side].y = point.y;
+					m_lastPos[side].z = point.z;
+					//min z:0.22, max z:0.7, 0.7-0.2=0.5, 0.5/10=0.05
+					//0.2-0.25 :C
+					//0.25-0.3 :D
+					point.z = (point.z < 0.25f) ? 0. : point.z - 0.25f;
+					int depth = ceilf(point.z / 0.05);
+					printf("\n\nL depth:%d\n\n", depth);
+					FMOD_Play(KeyNote_C + depth);
+					
+				}
+
+			}
+#if 0
 			pxcI32 firedGestures=m_cursorData->QueryFiredGesturesNumber();
-			for (int i = 0;i < firedGestures;i++) {
+			//for (int i = 0;i < firedGestures;i++)
+			int i = 0;//side;/////
+			{
 				pxcStatus sts = m_cursorData->QueryFiredGestureData(i, gestureData);
 				if (PXC_STATUS_NO_ERROR == sts)	{
 					//gestureData.handId
@@ -311,13 +349,16 @@ void CursorModel::updateGestureData()
 						break;
 					case PXCCursorData::CURSOR_HAND_CLOSING:
 					{
-						m_gestureFired = !m_gestureFired;
+						printf("\np [%d]: %f,%f,%f\n", side, point.x, point.y, point.z);
+
+						//m_gestureFired = !m_gestureFired;
 
 						//pause(m_gestureFired,true);
 
 						float temp = distance(point.x, point.y, point.z,
 							m_lastPos[side].x, m_lastPos[side].y, m_lastPos[side].z);
-						printf("CL delta=(%f,%f,%f): %f\n", point.x, point.y, point.z, temp);
+						//printf("CL delta=(%f,%f,%f): %f\n", point.x, point.y, point.z, temp);
+
 						//if (temp >= 0.05f) 
 						//if (abs(m_lastPos[side].z - point.z) >= 0.049f) 
 						{
@@ -330,7 +371,7 @@ void CursorModel::updateGestureData()
 							//0.25-0.3 :D
 							point.z = (point.z < 0.25f) ? 0. : point.z - 0.25f;
 							int depth = ceilf(point.z / 0.05);
-							printf("\nL depth:%d\n", depth);
+							printf("\n\nL depth:%d\n\n", depth);
 							FMOD_Play(KeyNote_C + depth);
 						}
 
@@ -343,6 +384,7 @@ void CursorModel::updateGestureData()
 					}
 				}
 			}
+#endif
 		}
 	}
 	/*
@@ -382,28 +424,28 @@ void CursorModel::updateskeletonTree()
 			{
 				m_rightHandExist = true;
 				side = 0;
-				printf("RH 0:");
+				//printf("RH 0:");
 			}
 			else if (cursor->QueryBodySide() == PXCHandData::BodySideType::BODY_SIDE_LEFT)
 			{
 				m_leftHandExist = true;
 				side = 1;
-				printf("LH 1:");
+				//printf("LH 1:");
 			}
 			PointData cursorData = {};
 			PXCPoint3DF32 point = cursor->QueryCursorWorldPoint();
 			cursorData.positionWorld = point;
 			m_curPos[side] = point;
-			printf("%s:Cpos %f,%f,%f",__func__,point.x, point.y, point.z);
+			//printf("%s:Cpos %f,%f,%f\n",__func__,point.x, point.y, point.z);
 			m_skeletonTree[side].setRoot(cursorData);
 
 			if (point.z < m_farZPos[side].z) {
 				m_farZPos[side]=point;//farest z pos, right handed coordination, z toward human face
-				printf("%d:CFar(%f,%f,%f)\n", side, point.x, point.y,point.z);
+				//printf("%d:CFar(%f,%f,%f)\n", side, point.x, point.y,point.z);
 			}
 			if (point.z > m_nearZPos[side].z) {
 				m_nearZPos[side]=point;//nearest z pos, right handed coordination, z toward human face
-				printf("%d:Cnear(%f,%f,%f)\n", side, point.x, point.y, point.z);
+				//printf("%d:Cnear(%f,%f,%f)\n", side, point.x, point.y, point.z);
 			}
 #if 0
 			//////////////////////////////////////////////

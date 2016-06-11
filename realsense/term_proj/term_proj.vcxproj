@@ -226,6 +226,7 @@
   <ItemGroup>
     <ClInclude Include="FMOD\common.h" />
     <ClInclude Include="FMOD\common_platform.h" />
+    <ClInclude Include="FMOD\play_sound.h" />
     <ClInclude Include="include\camera.h" />
     <ClInclude Include="include\config.h" />
     <ClInclude Include="include\CursorModel.h" />

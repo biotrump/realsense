@@ -10,7 +10,7 @@ as it plays.
 ==============================================================================*/
 #include "fmod.hpp"
 #include "common.h"
-
+#include "play_sound.h"
 //FMOD error 51 - Error initializing output device.
 //This is possibly an issue with the AudioSrv service in Windows. 
 //Go to the TaskManager. Go to the Services tab. 

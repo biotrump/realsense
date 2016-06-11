@@ -103,9 +103,4 @@ namespace ModelViewController
 		};
 }
 
-inline float distance(float x, float y, float z, float x1, float y1, float z1) 
-{
-	float temp = (x - x1)*(x - x1) + (y - y1)*(y - y1) + (z - z1)*(z - z1);
-	return sqrt(temp);
-}
 #endif	/* OPENGLVIEW_H */

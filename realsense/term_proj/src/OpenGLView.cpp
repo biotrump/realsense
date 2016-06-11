@@ -1,12 +1,10 @@
 #include "OpenGLView.h"
 # include <mmsystem.h>
 #include "common.h"
+#include "play_sound.h"
 using namespace ModelViewController;
 
-int fmodKeyboardCB(unsigned char Key, int x, int y);
-int FMOD_ShutDown(void);
-int FMOD_Init(void);
-int FMOD_Play(int keynote);
+
 
 /******************************************************************************/
 /*                                Defines                                     */
@@ -364,10 +362,11 @@ void OpenGLView::RenderSceneCB()
 	float x = 0.f;
 	float y = 0.f;
 	float z = 0.f;
+	/*
 	static float oldx[2] = { -100.0f, -100.0f };
 	static float oldy[2] = { -100.0f, -100.0f };
 	static float oldz[2] = { -100.0f, -100.0f };
-
+	*/
 	if(m_isFullHand)
 	{
 		if(m_hasLeftHand && m_hasRightHand)
@@ -399,18 +398,18 @@ void OpenGLView::RenderSceneCB()
 	{
 		if ( false == (m_hasRightHand && m_hasLeftHand) )
 		{
-			glTranslatef(x, y, -z);
+			glTranslatef(x, y, -z);//single handle or no hand(cursor mode)
 		}
 		else
 		{
-			glTranslatef(0, 0, -z);
+			glTranslatef(0, 0, -z);//double hands
 		}
 
 		glMultMatrixf(mat4x4);
 
 		if ( true == (m_hasRightHand && m_hasLeftHand) )
 		{
-			glTranslatef(x, y, z);
+			glTranslatef(x, y, z);//double hands
 		}
 		//////////////////////////////////////
 		//left and right hand
@@ -430,8 +429,9 @@ void OpenGLView::RenderSceneCB()
 	}
 	glPopMatrix();
 	if (m_hasRightHand){
+#if 0
 		float temp = distance(x, y, z, oldx[0], oldy[0], oldz[0]);
-		printf("R delta=%f\n", temp);
+		printf("CR delta=(%f,%f,%f): %f\n", x,y,z, temp);
 		if (temp >= 0.1f) {
 			//translation distance
 			//nearest pos: PXCPoint3DF32 m_nearZPos{ x = -0.0735254809 y = 0.0459796526 z = 0.745454848 }
@@ -446,10 +446,12 @@ void OpenGLView::RenderSceneCB()
 			FMOD_Play(KeyNote_C + depth);
 
 		}
+#endif
 	}
 	if (m_hasLeftHand) {
+#if 0
 		float temp = distance(x, y, z, oldx[1], oldy[1], oldz[1]);
-		printf("L delta=%f\n", temp);
+		printf("CL delta=(%f,%f,%f): %f\n", x, y, z, temp);
 		if (temp >= 0.1f) {
 			//translation distance
 			oldx[1] = x;
@@ -461,7 +463,9 @@ void OpenGLView::RenderSceneCB()
 			printf("\nL depth:%d\n",depth);
 			FMOD_Play(KeyNote_C + depth);
 		}
+#endif
 	}
+
 	// Draw Axis
 	glPushMatrix();
 	{
@@ -833,7 +837,7 @@ void OpenGLView::recursiveDrawJoints(Node<PointData> node,PXCPoint3DF32 pGlobal)
 //index 1 : left hand
 void OpenGLView::drawJoints(int index, bool applyTransformFlag)
 {
-	static PXCPoint3DF32 OldpGlobal = { 0.0f,0.0f,0.0f };
+	//static PXCPoint3DF32 OldpGlobal = { 0.0f,0.0f,0.0f };
 	PXCPoint3DF32 pGlobal;
 	if ( false == applyTransformFlag )
 	{
@@ -863,7 +867,7 @@ void OpenGLView::drawJoints(int index, bool applyTransformFlag)
 		drawCursorPoints(index);
 	}
 	//pGlobal - OldpGlobal : translation vection
-	OldpGlobal = pGlobal;
+	//OldpGlobal = pGlobal;
 }
 
 //===========================================================================//
@@ -955,7 +959,7 @@ void OpenGLView::display3DSpace() {}
 OpenGLView::~OpenGLView() 
 {
 
-//	FMOD_ShutDown();
+	FMOD_ShutDown();
 }
 
 

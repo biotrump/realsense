@@ -268,16 +268,16 @@ void CursorModel::updateskeletonTree()
 			PointData cursorData = {};
 			PXCPoint3DF32 point = cursor->QueryCursorWorldPoint();
 			cursorData.positionWorld = point;
-			printf("%s:pos %f,%f,%f",__func__,point.x, point.y, point.z);
+			printf("%s:Cpos %f,%f,%f",__func__,point.x, point.y, point.z);
 			m_skeletonTree[side].setRoot(cursorData);
 
 			if (point.z < m_farZPos[side].z) {
 				m_farZPos[side]=point;//farest z pos, right handed coordination, z toward human face
-				printf("%d:Far(%f,%f,%f)\n", side, point.x, point.y,point.z);
+				printf("%d:CFar(%f,%f,%f)\n", side, point.x, point.y,point.z);
 			}
 			if (point.z > m_nearZPos[side].z) {
 				m_nearZPos[side]=point;//nearest z pos, right handed coordination, z toward human face
-				printf("%d:near(%f,%f,%f)\n", side, point.x, point.y, point.z);
+				printf("%d:Cnear(%f,%f,%f)\n", side, point.x, point.y, point.z);
 			}
 		}		
 	}	

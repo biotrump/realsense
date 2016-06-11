@@ -3,7 +3,7 @@
 #include "pxchanddata.h"
 #include "pxchandconfiguration.h"
 #include "pxccursorconfiguration.h"
-
+#include "play_sound.h"
 using namespace ModelViewController;
 
 #define MAX_NUMBER_OF_JOINTS 22
@@ -302,6 +302,21 @@ void HandsModel::updateskeletonTree()
 
 			m_skeletonTree[side].setRoot(rootDataNode);
 
+			//FMOD play by distance and gesture
+			float temp = distance(point.x, point.y, point.z, 
+				m_lastPos[side].x, m_lastPos[side].y, m_lastPos[side].z);
+			printf("CL delta=(%f,%f,%f): %f\n", point.x, point.y, point.z, temp);
+			if (temp >= 0.1f) {
+				//translation distance
+				m_lastPos[side].x = point.x;
+				m_lastPos[side].y = point.y;
+				m_lastPos[side].z = point.z;
+
+				point.z = (point.z < 0.2f) ? 0. : point.z - 0.2f;
+				int depth = ceilf(point.z / 0.05);
+				printf("\nL depth:%d\n", depth);
+				FMOD_Play(KeyNote_C + depth);
+			}
 		}
 	}
 }

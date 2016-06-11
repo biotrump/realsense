@@ -40,14 +40,6 @@ enum Common_Button
     BTN_MORE,
     BTN_QUIT
 };
-enum KEY_NOTE {
-	KeyNote_C, KeyNote_D, KeyNote_E, KeyNote_F, KeyNote_G, KeyNote_A, KeyNote_B,
-	KeyNote_C_u, KeyNote_D_u, KeyNote_E_u, KeyNote_F_u, KeyNote_G_u, KeyNote_A_u, KeyNote_B_u,
-	KeyNote_C_u2, KeyNote_D_u2, KeyNote_E_u2, KeyNote_F_u2, KeyNote_G_u2, KeyNote_A_u2,	KeyNote_B_u2
-	/*,
-	KeyNote_C_d, KeyNote_D_d, KeyNote_E_d, KeyNote_F_d, KeyNote_G_d, KeyNote_A_d, KeyNote_B_d,
-	KeyNote_G_d2, KeyNote_A_d2, KeyNote_B_d2, KeyNote_C_u3*/
-};
 
 /* Cross platform functions (common) */
 void Common_Fatal(const char *format, ...);

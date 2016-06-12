@@ -2,6 +2,7 @@
 int fmodKeyboardCB(unsigned char Key, int x, int y);
 int FMOD_ShutDown(void);
 int FMOD_Init(void);
+int FMOD_NoteByDepth(float z);
 int FMOD_Play(int keynote);
 inline float distance(float x, float y, float z, float x1, float y1, float z1)
 {

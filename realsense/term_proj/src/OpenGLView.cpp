@@ -584,9 +584,11 @@ void OpenGLView::drawFps()
 void OpenGLView::drawPos(int index, const PXCPoint3DF32 point)
 {
 	glDisable(GL_LIGHTING);
-	std::string line = "";
+	char notes[] = { 'C','D','E','F','G','A','B' };
 	char spos[100];
-	sprintf(spos,"%c:%.3f,%.3f,%.3f", index?'R':'L', point.x, point.y, point.z);
+	int depth = FMOD_NoteByDepth(point.z);
+	sprintf(spos,"%c:%.3f,%.3f,%.3f : %c%d", index?'R':'L', point.x, point.y, point.z, 
+		notes[depth%8],depth/8);
 	if (index) {
 		//glColor3f(1.f, 0.f, 0.f);
 		renderBitmapString(0.1f, 0.5f, GLUT_BITMAP_TIMES_ROMAN_24, spos);
@@ -603,15 +605,16 @@ void OpenGLView::drawPos(int index, const PXCPoint3DF32 point)
 void OpenGLView::printInstructions()
 {
 	glColor3f( 0.f, 0.f, 0.f );
-	renderBitmapString(0.9f, 0.49f,GLUT_BITMAP_8_BY_13,"Instructions:");
-	renderBitmapString(0.9f, 0.46f,GLUT_BITMAP_8_BY_13,"-------------");
-	renderBitmapString(0.9f, 0.43f,GLUT_BITMAP_8_BY_13,"Full Hands Mode: Via Command Line - Run \"FF_Hands3DViewer.exe -full\"");
-	renderBitmapString(0.9f, 0.40f,GLUT_BITMAP_8_BY_13,"Left Mouse Button - Hold to rotate view");
-	renderBitmapString(0.9f, 0.37f,GLUT_BITMAP_8_BY_13,"Right Mouse Button - Click to reset view");
-	renderBitmapString(0.9f, 0.34f,GLUT_BITMAP_8_BY_13,"Mouse Wheel Up/Down - Zoom in/out");	
-	renderBitmapString(0.9f, 0.31f,GLUT_BITMAP_8_BY_13,"F1 - Pause/Play");
-	renderBitmapString(0.9f, 0.28f,GLUT_BITMAP_8_BY_13,"F3 - <Cursor Only> Shorten trail");
-	renderBitmapString(0.9f, 0.25f,GLUT_BITMAP_8_BY_13,"F4 - <Cursor Only> Extend trail");
+	renderBitmapString(0.9f, 0.55f,GLUT_BITMAP_8_BY_13,"Instructions:");
+	renderBitmapString(0.9f, 0.52f,GLUT_BITMAP_8_BY_13,"-------------");
+	renderBitmapString(0.9f, 0.49f,GLUT_BITMAP_8_BY_13,"Full Hands Mode: \"-fullhand\"");
+	renderBitmapString(0.9f, 0.46f,GLUT_BITMAP_8_BY_13,"Load 3D Model: \"-m path_to_3D_model.ds[.obj]\"");
+	renderBitmapString(0.9f, 0.43f,GLUT_BITMAP_8_BY_13,"'A','D' Key - to rotate view");
+	renderBitmapString(0.9f, 0.40f,GLUT_BITMAP_8_BY_13,"Right Mouse Button - Click to reset view");
+	renderBitmapString(0.9f, 0.37f,GLUT_BITMAP_8_BY_13,"'Z', 'X' - Zoom in/out");	
+	renderBitmapString(0.9f, 0.34f,GLUT_BITMAP_8_BY_13,"1,2,3,4,5,6,7,8 - Play Note");
+	renderBitmapString(0.9f, 0.31f,GLUT_BITMAP_8_BY_13,"F3 - <Cursor Only> Shorten trail");
+	renderBitmapString(0.9f, 0.28f,GLUT_BITMAP_8_BY_13,"F4 - <Cursor Only> Extend trail");
 }
 
 //===========================================================================//
@@ -885,6 +888,8 @@ void OpenGLView::drawCursorPoints(int index)
 	}
 }
 
+////////////////////////////////////////////////////////////////
+//
 void OpenGLView::drawGuidePoints(void)
 {
 	PXCPoint3DF32 pGlobal = { 0.f,0.f,0.f };

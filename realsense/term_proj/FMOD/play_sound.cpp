@@ -265,6 +265,30 @@ int FMOD_ShutDown(void)
 	return result;
 }
 
+int FMOD_NoteByDepth(float z)
+{
+	int depth = 0;
+	if (z < 0.21f)
+		depth = 0;
+	else if (z < 0.27f)
+		depth = 1;
+	else if (z < 0.34f)
+		depth = 2;
+	else if (z < 0.438f)
+		depth = 3;
+	else if (z < 0.5f)
+		depth = 4;
+	else if (z < 0.56f)
+		depth = 5;
+	else if (z < 0.58f)
+		depth = 6;
+	else if (z < 0.61f)
+		depth = 7;
+	else depth = 8;
+
+	return depth;
+}
+
 int FMOD_Play(int keynote)
 {
 	if (keynote < KeyNote_C)

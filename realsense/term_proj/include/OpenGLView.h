@@ -34,7 +34,7 @@ namespace ModelViewController
 	class OpenGLView : public IView
 	{
 	public:
-		OpenGLView(bool isFullHand = false, const char path[]=NULL);
+		OpenGLView(bool isFullHand = false, const char path[]=NULL , const char texture_path[]=NULL);
 		~OpenGLView();
 		virtual void renderScene();
 		virtual void display3DSkeleton(Tree<PointData>* skeletonTree,bool hasLeftHand, bool hasRightHand);
@@ -105,6 +105,7 @@ namespace ModelViewController
 		int m_winWidth;
 		int m_winHeight;
 		char *m_modelPath;
+		char *m_textPath;
 		};
 }
 

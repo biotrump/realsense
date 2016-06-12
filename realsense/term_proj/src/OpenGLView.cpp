@@ -36,6 +36,7 @@ bool OpenGLView::m_pause = false;
 
 pxcBYTE* OpenGLView::m_image =  0;
 Texture* OpenGLView::DepthTex = 0;
+GLuint OpenGLView::m_bgTexture = 0;
 
 int OpenGLView::m_fps = 0;
 
@@ -403,16 +404,18 @@ void OpenGLView::cube(void)
 							 //    glEnable(GL_TEXTURE_GEN_T);
 
 	glEnable(GL_TEXTURE_2D);
-	//glBindTexture(GL_TEXTURE_2D, m_bgTexture); //bind the texture
+	glBindTexture(GL_TEXTURE_2D, m_bgTexture); //bind the texture
 
 	glPushMatrix();
-	glRotatef(angle, 0.0f, 0.0f, 1.0f);
-	glBegin(GL_QUADS);
-	glTexCoord2d(0.0, 0.0); glVertex2d(-1.0, -1.0);
-	glTexCoord2d(1.0, 0.0); glVertex2d(+1.0, -1.0);
-	glTexCoord2d(1.0, 1.0); glVertex2d(+1.0, +1.0);
-	glTexCoord2d(0.0, 1.0); glVertex2d(-1.0, +1.0);
-	glEnd();
+	{
+		glRotatef(angle, 0.0f, 0.0f, 1.0f);
+		glBegin(GL_QUADS);
+		glTexCoord2d(0.0, 0.0); glVertex2d(-1.0, -1.0);
+		glTexCoord2d(1.0, 0.0); glVertex2d(+1.0, -1.0);
+		glTexCoord2d(1.0, 1.0); glVertex2d(+1.0, +1.0);
+		glTexCoord2d(0.0, 1.0); glVertex2d(-1.0, +1.0);
+		glEnd();
+	}
 	glPopMatrix();
 	//glutSwapBuffers();
 	//glutSolidCube(2);
@@ -630,6 +633,7 @@ void OpenGLView::RenderSceneCB()
 		glEnable(GL_DEPTH_TEST);
 	}
 
+	cube();
 
 	printInstructions();
 	drawFps();
@@ -774,14 +778,19 @@ void OpenGLView::switchTrackingMode()
 
 //===========================================================================//
 //path[] :the 3d model path
-OpenGLView::OpenGLView(bool isFullHand, const char path[])
+OpenGLView::OpenGLView(bool isFullHand, const char path[], const char texture_path[])
 {
 	m_isFullHand = isFullHand;
+	m_modelPath = NULL;
 	if (path && strlen(path)) {
 		m_modelPath=new char[strlen(path) + 1];
 		strcpy(m_modelPath, path);
 	}
-
+	m_textPath = NULL;
+	if (texture_path && strlen(texture_path)) {
+		m_textPath = new char[strlen(texture_path) + 1];
+		strcpy(m_textPath, texture_path);
+	}
 }
 
 //===========================================================================//
@@ -861,7 +870,9 @@ void OpenGLView::init()
 
 	CreateScenario();
 	
-//	m_bgTexture = LoadTexture("../resources/textures/orchestra.bmp", 1024, 768); //load the texture
+	//"../resources/textures/orchestra.bmp"
+	if(m_textPath && strlen(m_textPath))
+		m_bgTexture = LoadTexture(m_textPath, 1024, 768); //load the texture
 
 	FMOD_Init();
 }

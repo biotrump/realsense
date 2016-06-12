@@ -32,7 +32,7 @@ Extremities : 2 hands, medium hand speed, SR300 ??120 cm
 command line  : -full , full hand mode
 */
 
-bool start(bool isFullHand, char *assimp_mpath)
+bool start(bool isFullHand, char *assimp_mpath, char *texture_path)
 {
 	pxcStatus status = PXC_STATUS_ALLOC_FAILED;
 
@@ -53,7 +53,7 @@ bool start(bool isFullHand, char *assimp_mpath)
 	}
 
 	// Create Openglview which implements IView (allows creations of different views)
-	openGLView = new ModelViewController::OpenGLView(isFullHand, assimp_mpath);
+	openGLView = new ModelViewController::OpenGLView(isFullHand, assimp_mpath, texture_path);
 	if(!openGLView)
 	{
 		return false;
@@ -106,6 +106,7 @@ int main(int argc, char** argv)
 {
 	bool isFullHand = false;
 	char *modelFile = NULL;
+	char *textureFile = NULL;
 	////////////////////////////////////////////////
 	int i=1;
 
@@ -122,6 +123,11 @@ int main(int argc, char** argv)
 				i++;
 				modelFile = argv[i];
 			}
+		}else if (strcmp(argv[i], "-t") == 0) {
+			if (i < argc) {
+				i++;
+				textureFile = argv[i];
+			}
 		}
 		i++;
 	}
@@ -130,7 +136,7 @@ int main(int argc, char** argv)
 	// Full hand mode
 	if(isFullHand)
 	{
-		if(!start(isFullHand, modelFile))
+		if(!start(isFullHand, modelFile, textureFile))
 		{
 			std::printf("Failed at Initialization\n");
 			releaseAll();
@@ -139,10 +145,10 @@ int main(int argc, char** argv)
 	// Cursor hand
 	else
 	{
-		if(!start(isFullHand, modelFile))
+		if(!start(isFullHand, modelFile, textureFile))
 		{
 			releaseAll();
-			if(!start(!isFullHand, modelFile))
+			if(!start(!isFullHand, modelFile, textureFile))
 			{
 				std::printf("Failed at Initialization\n");
 				releaseAll();

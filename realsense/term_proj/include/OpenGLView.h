@@ -72,11 +72,14 @@ namespace ModelViewController
 		static void setVSync(bool sync);
 
 		static void close();
+		static GLuint LoadTexture(const char * filename, int width, int height);
+		static void cube(void);
 
 		static PointData m_skeletonsData[2][22];
 
 		static pxcBYTE* m_image;
 		static Texture* DepthTex;
+		static GLuint m_bgTexture; //the array for our texture
 
 		static bool m_hasLeftHand;
 		static bool m_hasRightHand;

@@ -399,6 +399,8 @@ GLuint OpenGLView::LoadTexture(const char * filename, int width, int height)
 
 void OpenGLView::cube(void)
 {
+	if (m_bgTexture == 0) return;
+
 	glEnable(GL_TEXTURE_2D); //enable 2D texturing
 							 //    glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
 							 //    glEnable(GL_TEXTURE_GEN_T);
@@ -600,7 +602,9 @@ void OpenGLView::RenderSceneCB()
 	//guiding points to play notes
 	drawGuidePoints();
 
+	//cube();
 	// Draw 2D Image
+#if 1
 	if(m_image)
 	{
 		DepthTex->Update(m_image);
@@ -632,8 +636,7 @@ void OpenGLView::RenderSceneCB()
 		glEnable(GL_LIGHTING);
 		glEnable(GL_DEPTH_TEST);
 	}
-
-	cube();
+#endif
 
 	printInstructions();
 	drawFps();

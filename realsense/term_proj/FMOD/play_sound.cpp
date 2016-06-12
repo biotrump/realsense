@@ -282,7 +282,7 @@ int FMOD_NoteByDepth(float z)
 		depth = 5;
 	else if (z < 0.58f)
 		depth = 6;
-	else if (z < 0.61f)
+	else if (z < 0.617f)
 		depth = 7;
 	else depth = 8;
 

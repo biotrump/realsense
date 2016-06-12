@@ -297,24 +297,7 @@ void CursorModel::updateGestureData()
 					//min z:0.22, max z:0.7, 0.7-0.2=0.5, 0.5/10=0.05
 					//0.2-0.25 :C
 					//0.25-0.3 :D
-					int depth = 0;
-					if (point.z < 0.21f)
-						depth = 0;
-					else if (point.z < 0.27f)
-						depth = 1;
-					else if (point.z < 0.34f)
-						depth = 2;
-					else if (point.z < 0.438f)
-						depth = 3;
-					else if (point.z < 0.5f)
-						depth = 4;
-					else if (point.z < 0.58f)
-						depth = 5;
-					else if (point.z < 0.63f)
-						depth = 6;
-					else if (point.z < 0.66f)
-						depth = 7;
-					else depth = 8;
+					int depth = FMOD_NoteByDepth(point.z);
 					//point.z = (point.z < 0.25f) ? 0. : point.z - 0.25f;
 					//int depth = ceilf(point.z / 0.05);
 					printf("\n\nL depth:%d\n\n", depth);

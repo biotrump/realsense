@@ -422,6 +422,7 @@ void OpenGLView::RenderSceneCB()
 			draw3DSkeleton(1, m_hasRightHand && m_hasLeftHand);
 		else
 			m_cursorPoints[1].clear();
+
 	}
 	glPopMatrix();
 
@@ -431,7 +432,7 @@ void OpenGLView::RenderSceneCB()
 		glDisable(GL_LIGHTING);
 		glTranslatef(0.6f, -0.4f, 0);
 		glMultMatrixf(mat4x4);
-		glLineWidth(2.3f);
+		glLineWidth(2.8f);
 		glBegin(GL_LINES);
 		{
 			glColor3f(1.0f,0.0f,0.0f);//x-axis
@@ -510,6 +511,7 @@ void OpenGLView::RenderSceneCB()
 
 	printInstructions();
 	drawFps();
+
 	if(m_pause)
 	{
 		static int blink = 0;
@@ -583,10 +585,12 @@ void OpenGLView::drawFps()
 //===========================================================================//
 void OpenGLView::drawPos(int index, const PXCPoint3DF32 point)
 {
+//	glPushAttrib(GL_CURRENT_BIT);
 	glDisable(GL_LIGHTING);
 	char notes[] = { 'C','D','E','F','G','A','B' };
 	char spos[100];
 	int depth = FMOD_NoteByDepth(point.z);
+
 	sprintf(spos,"%c:%.3f,%.3f,%.3f : %c%d", index?'R':'L', point.x, point.y, point.z, 
 		notes[depth%8],depth/8);
 	if (index) {
@@ -604,6 +608,7 @@ void OpenGLView::drawPos(int index, const PXCPoint3DF32 point)
 
 void OpenGLView::printInstructions()
 {
+
 	glColor3f( 0.f, 0.f, 0.f );
 	renderBitmapString(0.9f, 0.55f,GLUT_BITMAP_8_BY_13,"Instructions:");
 	renderBitmapString(0.9f, 0.52f,GLUT_BITMAP_8_BY_13,"-------------");
@@ -834,7 +839,12 @@ void OpenGLView::drawJoints(int index, bool applyTransformFlag)
 	}
 	//renderstring
 	//printf("%d:(x,y,z)=(%f,%f,%f)\n", index, pos.x, pos.y, pos.z);
-	drawPos(index, pos);
+	
+	glPopMatrix();//restore the original matrix 
+	{
+		drawPos(index, pos);
+	}
+	glPushMatrix();//push original again for later pop
 
 	if(m_isFullHand)
 	{
@@ -937,6 +947,7 @@ void OpenGLView::draw3DSkeleton(int index, bool applyTransformFlag)
 	}
 
 	drawJoints(index, applyTransformFlag);
+	
 	if(!m_isFullHand) return;
 	drawBones(index, applyTransformFlag);
 }

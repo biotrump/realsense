@@ -721,7 +721,7 @@ void OpenGLView::drawPos(int index, const PXCPoint3DF32 point)
 	int depth = FMOD_NoteByDepth(point.z);
 
 	sprintf(spos,"%c:%.3f,%.3f,%.3f : %c%d", index?'R':'L', point.x, point.y, point.z, 
-		notes[depth%8],depth/8);
+		notes[depth%7],depth/7);
 	if (index) {
 		//glColor3f(1.f, 0.f, 0.f);
 		renderBitmapString(0.1f, 0.5f, GLUT_BITMAP_TIMES_ROMAN_24, spos);

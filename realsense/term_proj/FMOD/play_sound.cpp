@@ -268,7 +268,7 @@ int FMOD_ShutDown(void)
 int FMOD_NoteByDepth(float z)
 {
 	int depth = 0;
-	if (z < 0.21f)
+	if (z < 0.22f)
 		depth = 0;
 	else if (z < 0.27f)
 		depth = 1;
@@ -276,27 +276,31 @@ int FMOD_NoteByDepth(float z)
 		depth = 2;
 	else if (z < 0.438f)
 		depth = 3;
-	else if (z < 0.5f)
+	else if (z < 0.49f)
 		depth = 4;
-	else if (z < 0.56f)
+	else if (z < 0.55f)
 		depth = 5;
-	else if (z < 0.58f)
+	else if (z < 0.59f)
 		depth = 6;
-	else if (z < 0.617f)
+	else if (z < 0.62f)
 		depth = 7;
-	else depth = 8;
-
+	else if (z < 0.64f)
+		depth = 8;
+	else 
+		depth = 9;
 	return depth;
 }
 
 int FMOD_Play(int keynote)
 {
+	static int last_note = KeyNote_C;
 	if (keynote < KeyNote_C)
-		keynote = KeyNote_C;
+		keynote = last_note;
 	printf("\nnotes:%d\n", keynote);
 	FMOD_RESULT result = fmod_system->playSound(fmod_sounds[keynote], 0, false, &channel);
 	ERRCHECK(result);
 	//Common_Sleep(500);
+	last_note = keynote;
 	return result;
 }
 
